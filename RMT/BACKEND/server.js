@@ -23,9 +23,14 @@ mongoose.connect(URL, {
 const connection = mongoose.connection
 
 connection.once("open", () => {
-  console.log("mongodb connection success!")
+  console.log("Mongodb connection success!")
 })
 
+
+const admintRouter = require("./routes/admin.js")
+app.use("/admin", admintRouter)
+
+
 app.listen(PORT, () => {
-  console.log(`server is up and running on port ${PORT}`)
+  console.log(`Server is up and running on port ${PORT}`)
 })
