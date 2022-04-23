@@ -26,9 +26,15 @@ connection.once("open", () => {
   console.log("Mongodb connection success!")
 })
 
-
+// Admin routes
 const admintRouter = require("./routes/admin.js")
 app.use("/admin", admintRouter)
+
+// Student routes
+
+
+
+//Supervisor routes 
 
 
 app.listen(PORT, () => {
