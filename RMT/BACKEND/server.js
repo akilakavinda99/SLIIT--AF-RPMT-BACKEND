@@ -31,7 +31,8 @@ const admintRouter = require("./routes/admin.js")
 app.use("/admin", admintRouter)
 
 // Student routes
-
+const studentRouter = require("./routes/student.js")
+app.use("/student", studentRouter)
 
 
 //Supervisor routes 
