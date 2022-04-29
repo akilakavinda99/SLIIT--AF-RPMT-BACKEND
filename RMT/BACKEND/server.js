@@ -42,7 +42,9 @@ const panelRouter = require("./routes/panel.js")
 app.use("/panel", panelRouter)
 
 
-//Supervisor routes 
+//Staff routes
+const staffRouter = require("./routes/staff.js")
+app.use("/staff",staffRouter)
 
 
 app.listen(PORT, () => {
