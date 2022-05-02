@@ -2,6 +2,8 @@ const router = require("express").Router()
 let Student = require("../models/student")
 let requestSupervisor = require("../models/requestSupervisor.js")
 
+const {protect}=require('../middleware/authMiddleware')
+const {protect_student}=require('../middleware/authMiddleware_student')
 
 // Add new Student to the system
 router.route("/add").post((req, res) => {
@@ -28,7 +30,7 @@ router.route("/add").post((req, res) => {
 })
 
 // Supervisor Request
-router.route("/requestsupervisor").post((req, res) => {
+router.route("/requestsupervisor").post((protect_student),(req, res) => {
 
     const name = req.body.name
     const requestedDate = req.body.requestedDate

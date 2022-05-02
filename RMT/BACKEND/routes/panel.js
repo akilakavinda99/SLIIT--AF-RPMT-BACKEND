@@ -1,9 +1,11 @@
 const router = require("express").Router();
 let Panel = require("../models/panel.js");
 
+const {protect_panel}=require('../middleware/authMiddleware_panel')
+const {protect}=require('../middleware/authMiddleware')
 
 // Create new panel
-router.route("/new").post((req, res) => {
+router.route("/new").post((protect),(req, res) => {
 
     const newData = req.body
 
@@ -43,7 +45,7 @@ router.route("/new").post((req, res) => {
 
 
 // Get all panel details
-router.route("/").get((req, res) => {
+router.route("/").get((protect),(req, res) => {
 
     Panel.find().then((panel) => {
         res.json(panel)
@@ -57,7 +59,7 @@ router.route("/").get((req, res) => {
 
 
 // Update panel details
-router.route("/update/:id").put(async (req, res) => {
+router.route("/update/:id").put((protect),async (req, res) => {
 
     let panelID = req.params.id
     const newData = req.body
@@ -78,7 +80,7 @@ router.route("/update/:id").put(async (req, res) => {
 
 
 // Remove panel
-router.route("/delete/:id").delete(async (req, res) => {
+router.route("/delete/:id").delete((protect),async (req, res) => {
 
     let panelID = req.params.id
 
