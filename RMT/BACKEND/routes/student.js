@@ -1,6 +1,7 @@
 const router = require("express").Router()
 let Student = require("../models/student")
 let requestSupervisor = require("../models/requestSupervisor.js")
+let requestCoSupervisor = require("../models/requestCoSupervisor")
 
 const {protect}=require('../middleware/authMiddleware')
 const {protect_student}=require('../middleware/authMiddleware_student')
@@ -30,7 +31,7 @@ router.route("/add").post((req, res) => {
 })
 
 // Supervisor Request
-router.route("/requestsupervisor").post((protect_student),(req, res) => {
+router.route("/requestSupervisor").post((protect_student),(req, res) => {
 
     const name = req.body.name
     const requestedDate = req.body.requestedDate
@@ -45,6 +46,62 @@ router.route("/requestsupervisor").post((protect_student),(req, res) => {
         res.json("Supervisor request added to the system.")
     }).catch((error) => {
         console.log(error)
+    })
+
+})
+
+// CoSupervisor Request
+router.route("/requestCoSupervisor").post((protect_student),(req, res) => {
+
+    const name = req.body.name
+    const requestedDate = req.body.requestedDate
+   
+
+    const newRequest = new requestCoSupervisor({
+        name,
+       requestedDate
+    })
+
+    newRequest.save().then(() => {
+        res.json("Supervisor request added to the system.")
+    }).catch((error) => {
+        console.log(error)
+    })
+
+})
+
+//get one students details
+router.route("/get/:id").get(async(req,res)=>{
+    const id = req.params.id;
+
+   await Student.findById(id).then((student)=>{
+        res.status(200).send({status:"student fetched", student});
+    
+    }).catch((e)=>{
+        res.status(500).send({status:"Error"});
+    })
+
+})
+
+//update student details
+router.route("/update/:id").put(async (req,res)=>{
+    const id = req.params.id;
+    const  {name,
+        itNumber,
+        email,
+        password} =req.body;
+
+    const updateStudent ={
+        name,
+        itNumber,
+        email,
+        password
+    }
+
+     await Student.findByIdAndUpdate(id,updateStudent).then(()=>{
+        res.status(200).send({status:"student updated"});
+    }).catch((e)=>{
+        res.status(500).send({status:"Error"});
     })
 
 })
