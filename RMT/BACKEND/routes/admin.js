@@ -1,9 +1,10 @@
 const router = require("express").Router()
 let Admin = require("../models/admin.js")
 
+const {protect}=require('../middleware/authMiddleware')
 
 // Add new Admin to the system
-router.route("/add").post((req, res) => {
+router.route("/add").post((protect),(req, res) => {
 
     const newData = {
         name: req.body.name,
@@ -45,7 +46,7 @@ router.route("/add").post((req, res) => {
 
 
 // Get all admin details
-router.route("/").get((req, res) => {
+router.route("/").get((protect),(req, res) => {
 
     Admin.find().then((admin) => {
         res.json(admin)
@@ -60,7 +61,7 @@ router.route("/").get((req, res) => {
 
 
 // Update admin details
-router.route("/update/:id").put(async (req, res) => {
+router.route("/update/:id").put((protect),async  (req, res) => {
 
     let adminID = req.params.id
 
@@ -87,7 +88,7 @@ router.route("/update/:id").put(async (req, res) => {
 
 
 // Delete admin
-router.route("/delete/:id").delete(async (req, res) => {
+router.route("/delete/:id").delete((protect),async (req, res) => {
 
     let adminID = req.params.id
 

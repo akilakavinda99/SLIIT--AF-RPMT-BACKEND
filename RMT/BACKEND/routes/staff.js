@@ -1,6 +1,9 @@
 const router = require("express").Router()
 let Staff = require("../models/staff.js")
 
+const {protect}=require('../middleware/authMiddleware')
+const {protect_staff}=require('../middleware/authMiddleware_staff')
+
 //Add new staff member to the system
 router.route("/add").post((req, res) => {
 
@@ -26,7 +29,7 @@ router.route("/add").post((req, res) => {
 })
 
 // Get staff member details
-router.route("/get/:id").get(async(req, res)=> {
+router.route("/get/:id").get((protect_staff),async(req, res)=> {
     let staffId = req.params.id;
     const staff = await Staff.findById(staffId, staff).then(() => {
         req.status(200).send({
@@ -41,7 +44,7 @@ router.route("/get/:id").get(async(req, res)=> {
 })
 
 //Update staff member details
-router.route("/update/:id").put(async(req, res) => {
+router.route("/update/:id").put((protect_staff),async(req, res) => {
     let staffId = req.params.id;
     const updateStaff = {
         name: req.body.name,
