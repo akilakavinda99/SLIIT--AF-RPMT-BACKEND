@@ -1,13 +1,16 @@
 const router = require("express").Router()
+const bcrypt = require("bcrypt")
 let Staff = require("../models/staff.js")
 
 //Add new staff member to the system
-router.route("/add").post((req, res) => {
+router.route("/add").post(async(req, res) => {
 
+    const saltPassword = await bcrypt.genSalt(10)
+    const securePassword = await bcrypt.hash(req.body.password, saltPassword)
     const name = req.body.name
     const username = req.body.username
     const email = req.body.email
-    const password = req.body.password
+    const password = securePassword
 
     const newStaff = new Staff({
         name,
