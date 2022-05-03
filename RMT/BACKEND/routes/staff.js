@@ -33,22 +33,21 @@ router.route("/add").post(async(req, res) => {
 
 // Get staff member details
 router.route("/get/:id").get((protect_staff),async(req, res)=> {
-    let staffId = req.params.id;
-    const staff = await Staff.findById(staffId, staff).then(() => {
-        req.status(200).send({
-            status : "Staff member data fetched."
-        })
+    const staffId = req.params.id;
+
+    await Staff.findById(staffId).then((staff) => {
+        res.status(200).send({status : "Staff member data fetched.", staff});
+
     }).catch((err) => {
         console.log(err.message)
-        res.status(500).send({
-            status: "Error with fetching data"
-        })
+        res.status(500).send({status: "Error with fetching data"});
     })
 })
 
 //Update staff member details
 router.route("/update/:id").put((protect_staff),async(req, res) => {
     let staffId = req.params.id;
+
     const updateStaff = {
         name: req.body.name,
         username: req.body.username,
@@ -69,5 +68,28 @@ router.route("/update/:id").put((protect_staff),async(req, res) => {
     })
 })
 
+
+//Accept reserch topic
+router.route("/acceptTopics").post((req, res) => {
+
+    const studentId = req.body.studentId
+    const researchTopic = req.body.researchTopic
+    const status = req.body.status
+    const approvedDate = req.body.approvedDate
+
+    const newTopic = new ResearchTopic({
+        studentId,
+        researchTopic,
+        status,
+        approvedDate
+    })
+
+    newTopic.save().then(() =>{
+        res.json("Reasearch topic status update succesfully.")
+    }).catch((err) =>{
+        console.log(err.message)
+    })
+    
+})
 
 module.exports = router
