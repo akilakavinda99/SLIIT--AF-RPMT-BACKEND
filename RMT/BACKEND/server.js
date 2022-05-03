@@ -47,6 +47,11 @@ const staffRouter = require("./routes/staff.js")
 app.use("/staff",staffRouter)
 
 
+// Marking routes
+const markingSchemRouter = require("./routes/markingScheme.js")
+app.use("/marking-schemes", markingSchemRouter)
+
+
 app.listen(PORT, () => {
   console.log(`Server is up and running on port ${PORT}`)
 })
