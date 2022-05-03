@@ -1,7 +1,8 @@
 const router = require("express").Router()
 let Student = require("../models/student")
 let requestSupervisor = require("../models/requestSupervisor.js")
-let requestCoSupervisor = require("../models/requestCoSupervisor")
+let requestCoSupervisor = require("../models/requestCoSupervisor.js")
+let registerResearch = require("../models/registerResearchTopic.js")
 
 const {protect}=require('../middleware/authMiddleware')
 const {protect_student}=require('../middleware/authMiddleware_student')
@@ -102,6 +103,26 @@ router.route("/update/:id").put(async (req,res)=>{
         res.status(200).send({status:"student updated"});
     }).catch((e)=>{
         res.status(500).send({status:"Error"});
+    })
+
+})
+
+// Register Research Topic
+router.route("/registerResearch").post((protect_student),(req, res) => {
+
+    const name = req.body.name
+    const topic = req.body.requestedDate
+   
+
+    const newRequest = new registerResearch({
+        name,
+       topic
+    })
+
+    registerResearch.save().then(() => {
+        res.json("Research topic added to the system.")
+    }).catch((error) => {
+        console.log(error)
     })
 
 })
