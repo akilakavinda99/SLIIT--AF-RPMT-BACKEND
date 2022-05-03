@@ -1,6 +1,7 @@
 const router = require("express").Router()
 const bcrypt = require("bcrypt")
 let Staff = require("../models/staff.js")
+let ResearchTopic = require("../models/acceptTopics")
 
 const {protect}=require('../middleware/authMiddleware')
 const {protect_staff}=require('../middleware/authMiddleware_staff')
