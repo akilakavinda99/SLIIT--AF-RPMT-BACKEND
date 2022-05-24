@@ -127,6 +127,20 @@ router.route("/registerResearch").post((protect_student),(req, res) => {
 
 })
 
+// Get all students
+router.route("/").get((req, res) => {
+    Student.find()
+    .then((student) => {
+        res.json(student)
+    })
+    .catch(err => {
+        console.log(err.message)
+        res.status(500).send({
+            error: "Error with listing all students"
+        })
+    })
+})
+
 
 
 module.exports = router

@@ -2,11 +2,11 @@ const router = require("express").Router()
 const bcrypt = require("bcrypt")
 let Staff = require("../models/staff.js")
 
-const {protect}=require('../middleware/authMiddleware')
-const {protect_staff}=require('../middleware/authMiddleware_staff')
+const { protect } = require('../middleware/authMiddleware')
+const { protect_staff } = require('../middleware/authMiddleware_staff')
 
 //Add new staff member to the system
-router.route("/add").post(async(req, res) => {
+router.route("/add").post(async (req, res) => {
 
     const saltPassword = await bcrypt.genSalt(10)
     const securePassword = await bcrypt.hash(req.body.password, saltPassword)
@@ -25,18 +25,18 @@ router.route("/add").post(async(req, res) => {
     newStaff.save().then(() => {
         res.json("New Staff member added to the system.")
     }).catch((error) => {
-         res.json(error)
+        res.json(error)
         console.log(error)
     })
 
 })
 
 // Get staff member details
-router.route("/get/:id").get((protect_staff),async(req, res)=> {
+router.route("/get/:id").get((protect_staff), async (req, res) => {
     let staffId = req.params.id;
     const staff = await Staff.findById(staffId, staff).then(() => {
         req.status(200).send({
-            status : "Staff member data fetched."
+            status: "Staff member data fetched."
         })
     }).catch((err) => {
         console.log(err.message)
@@ -47,7 +47,7 @@ router.route("/get/:id").get((protect_staff),async(req, res)=> {
 })
 
 //Update staff member details
-router.route("/update/:id").put((protect_staff),async(req, res) => {
+router.route("/update/:id").put((protect_staff), async (req, res) => {
     let staffId = req.params.id;
     const updateStaff = {
         name: req.body.name,
@@ -57,7 +57,7 @@ router.route("/update/:id").put((protect_staff),async(req, res) => {
 
     }
 
-    await Staff.findByIdAndUpdate(staffId, updateStaff).then(() =>{
+    await Staff.findByIdAndUpdate(staffId, updateStaff).then(() => {
         res.status(200).send({
             status: "Staff member updated."
         })
@@ -67,6 +67,20 @@ router.route("/update/:id").put((protect_staff),async(req, res) => {
             stauts: "Error with updating data."
         })
     })
+})
+
+// Get all staff
+router.route('/').get((req, res) => {
+    Staff.find()
+        .then(staff => {
+            res.json(staff)
+        })
+        .catch(err => {
+            console.log(err.message)
+            res.status(500).send({
+                error: "Error with listing all staff"
+            })
+        })
 })
 
 

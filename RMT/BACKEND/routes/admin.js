@@ -3,20 +3,39 @@ let Admin = require("../models/admin.js")
 
 const { protect } = require('../middleware/authMiddleware')
 
+const generatePass = (length) => {
+    const randomChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let result = "";
+    for (let i = 0; i < length; i++) {
+        result += randomChars.charAt(
+            Math.floor(Math.random() * randomChars.length)
+        );
+    }
+    return result;
+}
+
 // Add new Admin to the system
-router.route("/add").post((protect), (req, res) => {
+// router.route("/add").post((protect), (req, res) => {
+router.route("/add").post((req, res) => {
+
+    const password = generatePass(10)
 
     const newData = {
-        name: req.body.name,
-        userName: req.body.userName,
+        firstname: req.body.firstname,
+        lastname: req.body.lastname,
+        nameWithInitials: req.body.nameWithInitials,
+        address: req.body.address,
+        nic: req.body.nic,
         email: req.body.email,
-        password: req.body.password
+        mobile: req.body.mobile,
+        landline: req.body.landline,
+        password: password
     }
 
     Admin.findOne({
         "admin": {
             email: newData.email,
-            userName: newData.userName
+            nic: newData.nic
         }
     })
         .then((admin) => {
@@ -31,13 +50,13 @@ router.route("/add").post((protect), (req, res) => {
                 }).catch((err) => {
                     console.log(err.message)
                     res.status(500).send({
-                        status: "Error with adding new admin."
+                        error: "Error with adding new admin."
                     })
                 })
 
             } else {
                 res.status(409).send({
-                    status: "User already exists."
+                    error: "User already exists."
                 })
             }
         })
@@ -49,16 +68,19 @@ router.route("/add").post((protect), (req, res) => {
 
 
 // Get all admin details
-router.route("/").get((protect), (req, res) => {
+// router.route("/").get((protect), (req, res) => {
+router.route("/").get((req, res) => {
 
-    Admin.find().then((admin) => {
-        res.json(admin)
-    }).catch((err) => {
-        console.log(err.message)
-        res.status(500).send({
-            status: "Error with listing all admins."
+    Admin.find()
+        .then((admin) => {
+            res.json(admin)
         })
-    })
+        .catch((err) => {
+            console.log(err.message)
+            res.status(500).send({
+                error: "Error with listing all admins."
+            })
+        })
 
 })
 
@@ -69,10 +91,14 @@ router.route("/update/:id").put((protect), async (req, res) => {
     let adminID = req.params.id
 
     const updateAdmin = {
-        name: req.body.name,
-        userName: req.body.userName,
+        firstname: req.body.name,
+        lastname: req.body.lastname,
+        nameWithInitials: req.body.nameWithInitials,
+        address: req.body.address,
+        nic: req.body.nic,
         email: req.body.email,
-        password: req.body.password
+        mobile: req.body.mobile,
+        landline: req.body.landline,
     }
 
     await Admin.findByIdAndUpdate(adminID, updateAdmin)

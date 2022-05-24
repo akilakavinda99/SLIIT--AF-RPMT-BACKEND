@@ -29,7 +29,7 @@ connection.once("open", () => {
 
 // Admin routes
 const admintRouter = require("./routes/admin.js")
-app.use("/admin", admintRouter)
+app.use("/admins", admintRouter)
 
 
 // Student routes
