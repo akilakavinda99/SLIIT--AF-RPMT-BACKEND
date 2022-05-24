@@ -1,6 +1,6 @@
 const router = require("express").Router()
 const MarkingScheme = require("../models/markingScheme.js")
-const { route } = require("./admin.js")
+// const { route } = require("./admin.js")
 
 
 // Create new marking scheme
