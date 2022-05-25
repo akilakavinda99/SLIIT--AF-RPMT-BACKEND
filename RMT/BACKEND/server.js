@@ -33,8 +33,9 @@ const studentRouter = require("./routes/student.js");
 app.use("/student", studentRouter);
 
 // Panel routes
-const panelRouter = require("./routes/panel.js");
-app.use("/panel", panelRouter);
+const panelRouter = require("./routes/panel.js")
+app.use("/panels", panelRouter)
+
 
 //Staff routes
 const staffRouter = require("./routes/staff.js");

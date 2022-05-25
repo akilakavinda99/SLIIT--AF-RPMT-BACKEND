@@ -235,7 +235,8 @@ router.route("/registerResearch").post(protect_student, (req, res) => {
 
 // Get all students
 router.route("/").get((req, res) => {
-  Student.find()
+
+    Student.find({}, {password:0})
     .then((student) => {
       res.json(student);
     })

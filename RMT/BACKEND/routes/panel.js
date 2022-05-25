@@ -1,11 +1,13 @@
 const router = require("express").Router();
 let Panel = require("../models/panel.js");
+let Staff = require("../models/staff")
 
-const {protect_panel}=require('../middleware/authMiddleware_panel')
-const {protect}=require('../middleware/authMiddleware')
+const { protect_panel } = require('../middleware/authMiddleware_panel')
+const { protect } = require('../middleware/authMiddleware')
 
 // Create new panel
-router.route("/new").post((protect),(req, res) => {
+// router.route("/new").post((protect),(req, res) => {
+router.route("/new").post((req, res) => {
 
     const newData = req.body
 
@@ -17,10 +19,30 @@ router.route("/new").post((protect),(req, res) => {
 
                 const newPanel = new Panel(newData)
 
-                console.log(newPanel)
-
                 newPanel.save()
                     .then(() => {
+                        newData.panelMembers.forEach(member => {
+                            Staff.findById(member)
+                                .then(() => {
+                                    newData.panelMembers.forEach(member => {
+                                        console.log(newPanel._id);
+
+                                        Staff.findByIdAndUpdate(member,
+                                            { $push: { panel: newPanel._id } },
+                                            { safe: true, upsert: true },
+                                            function (err, doc) {
+                                                if (err) {
+                                                    console.log(err);
+                                                }
+                                                else{
+                                                    console.log("No error");
+                                                }
+                                            }
+                                        )
+
+                                    })
+                                });
+                        });
                         res.status(200).send({
                             status: "New pannel created."
                         })
@@ -28,13 +50,13 @@ router.route("/new").post((protect),(req, res) => {
                     .catch((err) => {
                         console.log(err.message)
                         res.status(500).send({
-                            status: "Error with creating panel."
+                            error: "Error with creating panel."
                         })
                     })
 
             } else {
                 res.status(409).send({
-                    status: "Panel name alreadey taken."
+                    error: "Panel name alreadey taken."
                 })
             }
         })
@@ -45,7 +67,7 @@ router.route("/new").post((protect),(req, res) => {
 
 
 // Get all panel details
-router.route("/").get((protect),(req, res) => {
+router.route("/").get((protect), (req, res) => {
 
     Panel.find().then((panel) => {
         res.json(panel)
@@ -59,7 +81,7 @@ router.route("/").get((protect),(req, res) => {
 
 
 // Update panel details
-router.route("/update/:id").put((protect),async (req, res) => {
+router.route("/update/:id").put((protect), async (req, res) => {
 
     let panelID = req.params.id
     const newData = req.body
@@ -80,7 +102,7 @@ router.route("/update/:id").put((protect),async (req, res) => {
 
 
 // Remove panel
-router.route("/delete/:id").delete((protect),async (req, res) => {
+router.route("/delete/:id").delete((protect), async (req, res) => {
 
     let panelID = req.params.id
 

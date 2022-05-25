@@ -107,7 +107,7 @@ router.route("/update/:id").put((protect_staff), async (req, res) => {
 
 // Get all staff
 router.route('/').get((req, res) => {
-    Staff.find()
+    Staff.find({}, {password:0})
         .then(staff => {
             res.json(staff)
         })
