@@ -39,7 +39,7 @@ app.use("/student", studentRouter)
 
 // Panel routes
 const panelRouter = require("./routes/panel.js")
-app.use("/panel", panelRouter)
+app.use("/panels", panelRouter)
 
 
 //Staff routes
