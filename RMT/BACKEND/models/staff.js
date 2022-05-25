@@ -3,7 +3,11 @@ const Schema = mongoose.Schema;
 
 const staffSchema = new Schema({
 
-    name: {
+    firstname: {
+        type: String,
+        required: true
+    },
+    lastname: {
         type: String,
         required: true
     },
@@ -15,9 +19,21 @@ const staffSchema = new Schema({
         type: String,
         required: true
     },
+    telephone: {
+        type: String,
+        required: true
+    },
+    researcharea: {
+        type: String,
+        required: true
+    },
     password: {
         type: String,
         required: true
+    },
+    panel: {
+        type: String,
+        required: false
     }
 })
 

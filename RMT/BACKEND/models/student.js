@@ -18,7 +18,17 @@ const studentSchema = new Schema({
     password: {
         type: String,
         required: true
+    },
+    hasGroup : {
+        type:Boolean,
+        default:false
+    },
+    groupId :{
+        type: String,
+        default:'No Group Yet'
     }
+
+
 
 })
 
