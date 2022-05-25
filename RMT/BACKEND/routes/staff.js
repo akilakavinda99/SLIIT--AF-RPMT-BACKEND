@@ -6,21 +6,54 @@ let ResearchTopic = require("../models/acceptTopics")
 const { protect } = require('../middleware/authMiddleware')
 const { protect_staff } = require('../middleware/authMiddleware_staff')
 
+
+//Login
+// router.route("/login").post((req, res) => {
+//     const {username, password} = req.body;
+
+//     Staff.findOne({username, password}, (err, staff) => {
+
+//         if (staff) {
+//             if (bcrypt.compareSync(password, staff.password)) {
+//                 res.send({ message: "login sucess", staff: staff })
+//         }else{
+//             res.send({error:"Wrong Credentials"})
+//         }
+
+//         }else{
+//             res.send({error: "not registered"})
+//         }
+// })
+
+// });
+
+
+
 //Add new staff member to the system
 router.route("/add").post(async (req, res) => {
 
+    //console.log(req.body)
+
     const saltPassword = await bcrypt.genSalt(10)
     const securePassword = await bcrypt.hash(req.body.password, saltPassword)
-    const name = req.body.name
-    const username = req.body.username
-    const email = req.body.email
-    const password = securePassword
+    // const firstname = req.body.firstname
+    // const lastname = req.body.lastname
+    // const username = req.body.username
+    // const email = req.body.email
+    // const telephone = req.body.telephone
+    // const researcharea = req.body.researcharea
+    // const password = securePassword
+    // const password = req.body.password
 
     const newStaff = new Staff({
-        name,
-        username,
-        email,
-        password
+        firstname: req.body.firstName,
+        lastname: req.body.lastName,
+        username: req.body.username,
+        email: req.body.email,
+        telephone: req.body.telephone,
+        researcharea: req.body.researchArea,
+        password: securePassword,
+        panel:''
     })
 
     newStaff.save().then(() => {
@@ -50,9 +83,12 @@ router.route("/update/:id").put((protect_staff), async (req, res) => {
     let staffId = req.params.id;
 
     const updateStaff = {
-        name: req.body.name,
+        firstname: req.body.firstname,
+        lastname: req.body.lastname,
         username: req.body.username,
         email: req.body.email,
+        telephone: req.body.telephone,
+        researcharea: req.body.researcharea,
         password: req.body.password
 
     }
