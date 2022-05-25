@@ -227,16 +227,18 @@ router.route("/update/:id").put(async (req, res) => {
 });
 
 // Register Research Topic
-router.route("/registerResearch").post(protect_student, (req, res) => {
+router.route("/registerResearch").post((req, res) => {
   const name = req.body.name;
-  const topic = req.body.requestedDate;
+  const topic = req.body.topic;
+  const groupId = req.body.groupId;
 
   const newRequest = new registerResearch({
     name,
     topic,
+    groupId,
   });
 
-  registerResearch
+  newRequest
     .save()
     .then(() => {
       res.json("Research topic added to the system.");
