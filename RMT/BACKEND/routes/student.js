@@ -192,6 +192,19 @@ router.route("/get/:id").get(async (req, res) => {
     });
 });
 
+//get one group details
+router.route("/getGroup/:id").get(async (req, res) => {
+  const id = req.params.id;
+
+  await StudentGroup.findById(id)
+    .then((student) => {
+      res.status(200).send({ status: "Group fetched", student });
+    })
+    .catch((e) => {
+      res.status(500).send({ status: "Error" });
+    });
+});
+
 //update student details
 router.route("/update/:id").put(async (req, res) => {
   const id = req.params.id;
@@ -235,8 +248,7 @@ router.route("/registerResearch").post(protect_student, (req, res) => {
 
 // Get all students
 router.route("/").get((req, res) => {
-
-    Student.find({}, {password:0})
+  Student.find({}, { password: 0 })
     .then((student) => {
       res.json(student);
     })
