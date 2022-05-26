@@ -248,6 +248,19 @@ router.route("/registerResearch").post((req, res) => {
     });
 });
 
+// Get all topics
+router.route('/topics').get((req,res) => {
+
+  registerResearch.find().then((researchtopics) => {
+    res.json(researchtopics)
+}).catch((err) => {
+    console.log(err.message)
+    res.status(500).send({
+        status: "Error with listing panels"
+    })
+})
+})
+
 // Get all students
 router.route("/").get((req, res) => {
   Student.find({}, { password: 0 })
