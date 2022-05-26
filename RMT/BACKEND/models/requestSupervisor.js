@@ -2,14 +2,14 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const requestSupervisorSchema = new Schema({
-  name: {
+  topic: {
     type: String,
     required: true,
   },
 
   requestedDate: {
     type: String,
-    required: true,
+    default: Date.now,
   },
   groupId: {
     type: String,
@@ -18,6 +18,10 @@ const requestSupervisorSchema = new Schema({
   supervisorRequestStatus: {
     type: String,
     default: "Pending",
+  },
+  supervisorId: {
+    type: String,
+    required: true,
   },
 });
 
