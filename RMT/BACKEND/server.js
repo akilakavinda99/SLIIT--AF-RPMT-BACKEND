@@ -4,7 +4,12 @@ const bodyParser = require("body-parser")
 const cors = require("cors")
 const dotenv = require("dotenv")
 const app = express()
+
+const multer=require("multer")
+const DocModel=require('./models/documentup')
+
 require("dotenv").config()
+
 
 const PORT = process.env.PORT || 8070
 
