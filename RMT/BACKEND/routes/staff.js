@@ -53,7 +53,7 @@ router.route("/add").post(async (req, res) => {
         telephone: req.body.telephone,
         researcharea: req.body.researchArea,
         password: securePassword,
-        panel:''
+        panel: ''
     })
 
     newStaff.save().then(() => {
@@ -66,15 +66,16 @@ router.route("/add").post(async (req, res) => {
 })
 
 // Get staff member details
-router.route("/get/:id").get((protect_staff),async(req, res)=> {
+// router.route("/get/:id").get((protect_staff),async(req, res)=> {
+router.route("/get/:id").get(async (req, res) => {
     const staffId = req.params.id;
 
     await Staff.findById(staffId).then((staff) => {
-        res.status(200).send({status : "Staff member data fetched.", staff});
+        res.status(200).send({ status: "Staff member data fetched.", staff });
 
     }).catch((err) => {
         console.log(err.message)
-        res.status(500).send({status: "Error with fetching data"});
+        res.status(500).send({ status: "Error with fetching data" });
     })
 })
 
@@ -107,7 +108,7 @@ router.route("/update/:id").put((protect_staff), async (req, res) => {
 
 // Get all staff
 router.route('/').get((req, res) => {
-    Staff.find({}, {password:0})
+    Staff.find({}, { password: 0 })
         .then(staff => {
             res.json(staff)
         })
@@ -135,12 +136,12 @@ router.route("/acceptTopics").post((req, res) => {
         approvedDate
     })
 
-    newTopic.save().then(() =>{
+    newTopic.save().then(() => {
         res.json("Reasearch topic status update succesfully.")
-    }).catch((err) =>{
+    }).catch((err) => {
         console.log(err.message)
     })
-    
+
 })
 
 module.exports = router

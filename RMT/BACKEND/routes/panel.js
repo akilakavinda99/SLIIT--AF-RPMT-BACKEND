@@ -22,27 +22,18 @@ router.route("/new").post((req, res) => {
                 newPanel.save()
                     .then(() => {
                         newData.panelMembers.forEach(member => {
-                            Staff.findById(member)
-                                .then(() => {
-                                    newData.panelMembers.forEach(member => {
-                                        console.log(newPanel._id);
 
-                                        Staff.findByIdAndUpdate(member,
-                                            { $push: { panel: newPanel._id } },
-                                            { safe: true, upsert: true },
-                                            function (err, doc) {
-                                                if (err) {
-                                                    console.log(err);
-                                                }
-                                                else{
-                                                    console.log("No error");
-                                                }
-                                            }
-                                        )
-
-                                    })
-                                });
-                        });
+                            // Push new panel id to panel array in staff
+                            Staff.findByIdAndUpdate(member,
+                                { $push: { panel: newPanel._id } },
+                                { safe: true, upsert: true },
+                                function (err, doc) {
+                                    if (err) {
+                                        console.log(err);
+                                    }
+                                }
+                            )
+                        })
                         res.status(200).send({
                             status: "New pannel created."
                         })
@@ -67,7 +58,8 @@ router.route("/new").post((req, res) => {
 
 
 // Get all panel details
-router.route("/").get((protect), (req, res) => {
+// router.route("/").get((protect), (req, res) => {
+router.route("/").get((req, res) => {
 
     Panel.find().then((panel) => {
         res.json(panel)

@@ -8,6 +8,11 @@ const panelSchema = new Schema({
         type: String,
         required: true
     },
+    panelDesc: {
+        type: String,
+        required: false,
+        default: "No description..."
+    },
     panelMembers: {
         type: Object
     }

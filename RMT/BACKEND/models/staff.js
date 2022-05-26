@@ -32,7 +32,7 @@ const staffSchema = new Schema({
         required: true
     },
     panel: {
-        type: String,
+        type: Object,
         required: false
     }
 })
