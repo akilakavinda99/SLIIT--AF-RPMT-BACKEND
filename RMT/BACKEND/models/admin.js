@@ -3,11 +3,23 @@ const Schema = mongoose.Schema;
 
 const adminSchema = new Schema({
 
-    name: {
+    firstname: {
         type: String,
         required: true
     },
-    userName: {
+    lastname:{
+        type: String,
+        required: true
+    },
+    nameWithInitials: {
+        type: String,
+        required: true
+    },
+    address: {
+        type: String,
+        required: true
+    },
+    nic: {
         type: String,
         required: true
     },
@@ -15,10 +27,19 @@ const adminSchema = new Schema({
         type: String,
         required: true
     },
+    mobile: {
+        type: String,
+        required: true
+    },
+    landline: {
+        type: String,
+        required: true
+    },
     password: {
         type: String,
         required: true
-    }
+    },
+
 
 })
 
