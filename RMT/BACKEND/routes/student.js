@@ -290,4 +290,26 @@ router.route("/").get((req, res) => {
     });
 });
 
+
+//Login
+router.route("/stdlogin").post((req, res) => {
+    const {itNumber, password} = req.body;
+
+    Student.findOne({itNumber, password}, (err, Student) => {
+
+        if (Student) {
+            if (password==Student.password) {
+                res.send({ message: "login sucess", Student: Student })
+        }else{
+            res.send({error:"Wrong Credentials"})
+        }
+
+        }else{
+            res.send({error: "not registered"})
+        }
+})
+
+});
+
+
 module.exports = router;
