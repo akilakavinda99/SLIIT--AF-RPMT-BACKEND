@@ -99,8 +99,8 @@ router.route("/groupRegister").post(async (req, res) => {
         console.log(student);
         if (student) {
           existed = false;
-          res.status(500).send({
-            status: "One or more student is in the grp",
+          res.status(406).send({
+            status: "One or more studentn the grp",
           });
           return;
         }
@@ -155,13 +155,15 @@ router.route("/groupRegister").post(async (req, res) => {
 });
 
 // Supervisor Request
-router.route("/requestSupervisor").post(protect_student, (req, res) => {
-  const name = req.body.name;
-  const requestedDate = req.body.requestedDate;
+router.route("/requestSupervisor").post((req, res) => {
+  const topic = req.body.topic;
+  const groupId = req.body.groupId;
+  const supervisorId = req.body.supervisorId;
 
   const newRequest = new requestSupervisor({
-    name,
-    requestedDate,
+    topic,
+    groupId,
+    supervisorId,
   });
 
   newRequest
