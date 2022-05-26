@@ -122,26 +122,27 @@ router.route('/').get((req, res) => {
 
 
 //Accept reserch topic
-router.route("/acceptTopics").post((req, res) => {
+// router.route("/acceptTopics").post((req, res) => {
 
-    const studentId = req.body.studentId
-    const researchTopic = req.body.researchTopic
-    const status = req.body.status
-    const approvedDate = req.body.approvedDate
+//     const studentId = req.body.studentId
+//     const researchTopic = req.body.researchTopic
+//     const status = req.body.status
+//     const approvedDate = req.body.approvedDate
 
-    const newTopic = new ResearchTopic({
-        studentId,
-        researchTopic,
-        status,
-        approvedDate
-    })
+//     const newTopic = new ResearchTopic({
+//         studentId,
+//         researchTopic,
+//         status,
+//         approvedDate
+//     })
 
-    newTopic.save().then(() => {
-        res.json("Reasearch topic status update succesfully.")
-    }).catch((err) => {
-        console.log(err.message)
-    })
+//     newTopic.save().then(() =>{
+//         res.json("Reasearch topic status update succesfully.")
+//     }).catch((err) =>{
+//         console.log(err.message)
+//     })
+    
+// })
 
-})
 
 module.exports = router

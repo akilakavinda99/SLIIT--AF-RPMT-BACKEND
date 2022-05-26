@@ -192,6 +192,19 @@ router.route("/get/:id").get(async (req, res) => {
     });
 });
 
+//get one group details
+router.route("/getGroup/:id").get(async (req, res) => {
+  const id = req.params.id;
+
+  await StudentGroup.findById(id)
+    .then((student) => {
+      res.status(200).send({ status: "Group fetched", student });
+    })
+    .catch((e) => {
+      res.status(500).send({ status: "Error" });
+    });
+});
+
 //update student details
 router.route("/update/:id").put(async (req, res) => {
   const id = req.params.id;
@@ -214,16 +227,18 @@ router.route("/update/:id").put(async (req, res) => {
 });
 
 // Register Research Topic
-router.route("/registerResearch").post(protect_student, (req, res) => {
+router.route("/registerResearch").post((req, res) => {
   const name = req.body.name;
-  const topic = req.body.requestedDate;
+  const topic = req.body.topic;
+  const groupId = req.body.groupId;
 
   const newRequest = new registerResearch({
     name,
     topic,
+    groupId,
   });
 
-  registerResearch
+  newRequest
     .save()
     .then(() => {
       res.json("Research topic added to the system.");
@@ -235,8 +250,7 @@ router.route("/registerResearch").post(protect_student, (req, res) => {
 
 // Get all students
 router.route("/").get((req, res) => {
-
-    Student.find({}, {password:0})
+  Student.find({}, { password: 0 })
     .then((student) => {
       res.json(student);
     })
