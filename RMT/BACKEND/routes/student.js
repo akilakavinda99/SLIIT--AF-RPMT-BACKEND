@@ -22,14 +22,29 @@ router.route("/add").post((req, res) => {
     password,
   });
 
-  newStudent
-    .save()
-    .then(() => {
-      res.json("New Student added to the system.");
+  Student.findOne({
+    itNumber: itNumber,
+    email: email,
+  })
+    .then((student) => {
+      if (!student) {
+        newStudent
+          .save()
+          .then(() => {
+            res.json("New Student added to the system.");
+          })
+          .catch((error) => {
+            res.json(error);
+            console.log(error);
+          });
+      } else {
+        res.status(409).send({
+          error: "User already exists.",
+        });
+      }
     })
-    .catch((error) => {
-      res.json(error);
-      console.log(error);
+    .catch((err) => {
+      res.send("Error: " + err.message);
     });
 });
 
