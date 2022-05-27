@@ -168,7 +168,16 @@ router.route("/requestSupervisor").post((req, res) => {
 
   newRequest
     .save()
-    .then(() => {
+    .then(async () => {
+      const updateGroup = {
+        hasRequestedSupervisor: true,
+      };
+      try {
+        await StudentGroup.findByIdAndUpdate(groupId, updateGroup);
+      } catch (error) {
+        console.log(error);
+      }
+
       res.json("Supervisor request added to the system.");
     })
     .catch((error) => {
@@ -302,6 +311,22 @@ router.route("/getStudent/:id").get((req, res) => {
   })
     .then((student) => {
       res.json(student);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.json(err);
+    });
+});
+
+router.route("/getSupervisorStatus/:id").get((req, res) => {
+  groupId = req.params.id;
+
+  requestSupervisor
+    .findOne({
+      groupId: groupId,
+    })
+    .then((supervisor) => {
+      res.json(supervisor);
     })
     .catch((err) => {
       console.log(err);
