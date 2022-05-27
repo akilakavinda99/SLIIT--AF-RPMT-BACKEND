@@ -266,17 +266,19 @@ router.route("/registerResearch").post((req, res) => {
 });
 
 // Get all topics
-router.route('/topics').get((req,res) => {
-
-  registerResearch.find().then((researchtopics) => {
-    res.json(researchtopics)
-}).catch((err) => {
-    console.log(err.message)
-    res.status(500).send({
-        status: "Error with listing panels"
+router.route("/topics").get((req, res) => {
+  registerResearch
+    .find()
+    .then((researchtopics) => {
+      res.json(researchtopics);
     })
-})
-})
+    .catch((err) => {
+      console.log(err.message);
+      res.status(500).send({
+        status: "Error with listing panels",
+      });
+    });
+});
 
 // Get all students
 router.route("/").get((req, res) => {
@@ -289,6 +291,21 @@ router.route("/").get((req, res) => {
       res.status(500).send({
         error: "Error with listing all students",
       });
+    });
+});
+
+router.route("/getStudent/:id").get((req, res) => {
+  itNumber = req.params.id;
+
+  Student.findOne({
+    itNumber: itNumber,
+  })
+    .then((student) => {
+      res.json(student);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.json(err);
     });
 });
 
