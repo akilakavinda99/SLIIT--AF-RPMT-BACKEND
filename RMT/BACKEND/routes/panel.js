@@ -72,6 +72,27 @@ router.route("/").get((req, res) => {
 })
 
 
+// Get selected panel details
+router.route("/:id").get((req, res) => {
+    const panelId = req.params.id;
+
+    Panel.findById(panelId)
+        .then(panel => {
+            res.status(200)
+            .send({
+                status: "Panel data fetched.", panel
+            })
+        })
+        .catch(err => {
+            console.log(err.message);
+            res.status(500)
+            .send({
+                error: "Error with fetching data."
+            })
+        })
+})
+
+
 // Update panel details
 router.route("/update/:id").put((protect), async (req, res) => {
 
