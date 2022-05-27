@@ -181,26 +181,39 @@ router.route("/requestSupervisor").post((req, res) => {
       res.json("Supervisor request added to the system.");
     })
     .catch((error) => {
+      res.json(error);
       console.log(error);
     });
 });
 
 // CoSupervisor Request
-router.route("/requestCoSupervisor").post(protect_student, (req, res) => {
-  const name = req.body.name;
-  const requestedDate = req.body.requestedDate;
+router.route("/requestCoSupervisor").post((req, res) => {
+  const topic = req.body.topic;
+  const groupId = req.body.groupId;
+  const supervisorId = req.body.supervisorId;
 
   const newRequest = new requestCoSupervisor({
-    name,
-    requestedDate,
+    topic,
+    groupId,
+    supervisorId,
   });
 
   newRequest
     .save()
-    .then(() => {
+    .then(async () => {
+      const updateGroup = {
+        hasRequestedCoSupervisor: true,
+      };
+      try {
+        await StudentGroup.findByIdAndUpdate(groupId, updateGroup);
+      } catch (error) {
+        console.log(error);
+      }
+
       res.json("Supervisor request added to the system.");
     })
     .catch((error) => {
+      res.json(error);
       console.log(error);
     });
 });
@@ -322,6 +335,22 @@ router.route("/getSupervisorStatus/:id").get((req, res) => {
   groupId = req.params.id;
 
   requestSupervisor
+    .findOne({
+      groupId: groupId,
+    })
+    .then((supervisor) => {
+      res.json(supervisor);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.json(err);
+    });
+});
+
+router.route("/getCoSupervisorStatus/:id").get((req, res) => {
+  groupId = req.params.id;
+
+  requestCoSupervisor
     .findOne({
       groupId: groupId,
     })
