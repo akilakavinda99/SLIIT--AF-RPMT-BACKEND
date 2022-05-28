@@ -13,7 +13,7 @@ const submissionSchema = new Schema({
     },
     description: {
         type: String,
-        required: true
+        required: false
     },
     fileTypes: {
         type: Object,
