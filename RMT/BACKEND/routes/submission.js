@@ -33,7 +33,7 @@ router.route("/").get((req, res) => {
 
 // Get all  available submisions
 router.route("/availableSubmissions").get((req, res) => {
-  console.log("awawa");
+  // console.log("awawa");
   Submission.find({
     available: true,
   })
