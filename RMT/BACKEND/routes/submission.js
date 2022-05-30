@@ -71,7 +71,7 @@ router.route("/update/:submissionId").put((req, res) => {
 
   Submission.findByIdAndUpdate(submissionId, newData)
     .then(() => {
-      res.status(200).send({ status: "Submission updated." });
+      res.status(200).send({ status: "Submission successfully updated." });
     })
     .catch((err) => {
       console.log(err.message);
