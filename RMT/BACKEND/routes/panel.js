@@ -66,7 +66,7 @@ router.route("/").get((req, res) => {
     }).catch((err) => {
         console.log(err.message)
         res.status(500).send({
-            status: "Error with listing panels"
+            error: "Error with listing panels"
         })
     })
 })
@@ -110,7 +110,7 @@ router.route("/update/:id").put(async (req, res) => {
         .catch((err) => {
             console.log(err.message)
             res.status(500).send({
-                status: "Error with updating data."
+                error: "Error with updating data."
             })
         })
 })
@@ -131,7 +131,7 @@ router.route("/delete/:id").delete(async (req, res) => {
         .catch((err) => {
             console.log(err.message)
             res.status(500).send({
-                status: "Error with removing panel."
+                error: "Error with removing panel."
             })
         })
 })
