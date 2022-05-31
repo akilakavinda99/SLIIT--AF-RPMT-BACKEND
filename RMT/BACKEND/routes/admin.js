@@ -3,6 +3,10 @@ const bcrypt = require('bcrypt')
 const nodemailer = require('nodemailer')
 
 let Admin = require("../models/admin.js")
+let Staff = require("../models/staff")
+let Student = require("../models/student")
+let StudentGroup = require("../models/studentGroup")
+let Panel = require("../models/panel")
 
 const { protect } = require('../middleware/authMiddleware')
 
@@ -103,7 +107,7 @@ router.route("/add").post((req, res) => {
 // router.route("/").get((protect), (req, res) => {
 router.route("/").get((req, res) => {
 
-    Admin.find({}, {password:0})
+    Admin.find({}, { password: 0 })
         .then((admin) => {
             res.json(admin)
         })
@@ -165,6 +169,30 @@ router.route("/delete/:id").delete((protect), async (req, res) => {
                 error: "Error with deleting admin."
             })
         })
+
+})
+
+
+// Get dashboard summary
+router.route('/summary').get(async (req, res) => {
+    try {
+        const staffCount = await Staff.estimatedDocumentCount()
+        const studentCount = await Student.estimatedDocumentCount()
+        const stdGrpCount = await StudentGroup.estimatedDocumentCount()
+        const panelCount = await Panel.estimatedDocumentCount()
+
+        res.status(200).send({
+            status: "Successfully counted.",
+            staffCount,
+            studentCount,
+            stdGrpCount,
+            panelCount
+        })
+    } catch (err) {
+        res.status(500).send({ error: err.message })
+    }
+
+
 
 })
 
