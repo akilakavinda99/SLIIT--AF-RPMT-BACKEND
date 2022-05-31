@@ -13,7 +13,21 @@ const docSchema = mongoose.Schema({
     topic:{
         type:String,
         required:true
+    },
+
+    itNumber: {
+        type: String,
+        required: true
+    },
+
+    groupID:{
+        type: String,
+        required: true
     }
+
+
+
+
 })
 
 module.exports=DocumentModel=mongoose.model('documentModel',docSchema)

@@ -1,12 +1,15 @@
 const router = require("express").Router();
+const bodyParser=require("body-parser")
 let Student = require("../models/student");
 let requestSupervisor = require("../models/requestSupervisor.js");
 let requestCoSupervisor = require("../models/requestCoSupervisor.js");
 let registerResearch = require("../models/registerResearchTopic.js");
 let StudentGroup = require("../models/studentGroup");
 
+
 const { protect } = require("../middleware/authMiddleware");
 const { protect_student } = require("../middleware/authMiddleware_student");
+const { application } = require("express");
 
 // Add new Student to the system
 router.route("/add").post((req, res) => {
@@ -14,6 +17,7 @@ router.route("/add").post((req, res) => {
   const itNumber = req.body.itNumber;
   const email = req.body.email;
   const password = req.body.password;
+  console.log(email);
 
   const newStudent = new Student({
     name,
@@ -21,6 +25,8 @@ router.route("/add").post((req, res) => {
     email,
     password,
   });
+
+
 
   Student.findOne({
     itNumber: itNumber,
@@ -292,14 +298,18 @@ router.route("/").get((req, res) => {
 
 
 //Login
-router.route("/stdlogin").post((req, res) => {
-    const {itNumber, password} = req.body;
+router.route("/stdlogin").post(async(req, res) => {
+    const email=req.body.email;
+    const password=req.body.password;
+    console.log(email)
 
-    Student.findOne({itNumber, password}, (err, Student) => {
+    Student.findOne({email, password}, (err, Student) => {
+      console.log(req.body.email)
 
         if (Student) {
-            if (password==Student.password) {
+            if (email==Student.email ) {
                 res.send({ message: "login sucess", Student: Student })
+
         }else{
             res.send({error:"Wrong Credentials"})
         }
