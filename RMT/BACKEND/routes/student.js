@@ -11,6 +11,9 @@ const { protect } = require("../middleware/authMiddleware");
 const { protect_student } = require("../middleware/authMiddleware_student");
 const { application } = require("express");
 
+
+
+
 // Add new Student to the system
 router.route("/add").post((req, res) => {
   const name = req.body.name;
@@ -53,6 +56,32 @@ router.route("/add").post((req, res) => {
       res.send("Error: " + err.message);
     });
 });
+
+//Login
+router.route("/stdlogin").post(async(req, res) => {
+  const email=req.body.email;
+  const password=req.body.password;
+  console.log(email)
+
+  Student.findOne({email, password}, (err, Student) => {
+    console.log(req.body.email)
+
+      if (Student) {
+          if (email==Student.email ) {
+              res.send({ message: "login sucess", Student: Student })
+
+      }else{
+          res.send({error:"Wrong Credentials"})
+      }
+
+      }else{
+          res.send({error: "not registered"})
+      }
+})
+
+});
+
+
 
 //Group Register
 router.route("/groupRegister").post(async (req, res) => {
@@ -324,29 +353,6 @@ router.route("/").get((req, res) => {
 
 
 
-//Login
-router.route("/stdlogin").post(async(req, res) => {
-    const email=req.body.email;
-    const password=req.body.password;
-    console.log(email)
-
-    Student.findOne({email, password}, (err, Student) => {
-      console.log(req.body.email)
-
-        if (Student) {
-            if (email==Student.email ) {
-                res.send({ message: "login sucess", Student: Student })
-
-        }else{
-            res.send({error:"Wrong Credentials"})
-        }
-
-        }else{
-            res.send({error: "not registered"})
-        }
-})
-
-});
 
 
 router.route("/getStudent/:id").get((req, res) => {
