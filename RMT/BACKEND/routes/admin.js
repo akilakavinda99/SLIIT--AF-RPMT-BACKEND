@@ -162,7 +162,7 @@ router.route("/delete/:id").delete((protect), async (req, res) => {
         .catch((err) => {
             console.log(err.message)
             res.status(500).send({
-                status: "Error with deleting admin."
+                error: "Error with deleting admin."
             })
         })
 

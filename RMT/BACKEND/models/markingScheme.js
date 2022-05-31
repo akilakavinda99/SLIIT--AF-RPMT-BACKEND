@@ -18,6 +18,10 @@ const markingSchema = new Schema({
     },
     marking: {
         type: String
+    },
+    available: {
+        type: Boolean,
+        default: false
     }
 
 })

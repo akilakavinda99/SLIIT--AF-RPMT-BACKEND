@@ -8,9 +8,11 @@ router.route("/create").post((req, res) => {
 
     const newData = {
         name: req.body.name,
-        marking: req.body.marking
+        marking: req.body.marking,
+        available: req.body.available
     }
 
+    // console.log(newData);
     const newMarking = new MarkingScheme(newData)
 
     newMarking.save()
@@ -78,7 +80,7 @@ router.route("/delete/:id").delete(async (req, res) => {
     await MarkingScheme.findByIdAndDelete(markingID)
         .then(() => {
             res.status(200).send({
-                status: "User account successfully deleted."
+                status: "Marking scheme successfully deleted."
             })
         })
         .catch((err) => {
@@ -86,6 +88,25 @@ router.route("/delete/:id").delete(async (req, res) => {
             res.status(500).send({
                 error: "Error with deleting marking scheme."
             })
+        })
+})
+
+
+// Update marking scheme
+router.route("/update/:id").put(async (req, res) => {
+    const markingId = req.params.id
+    const markingData = req.body
+    markingData.lastModified = new Date()
+    // console.log(markingId);
+    // console.log(markingData);
+
+    await MarkingScheme.findByIdAndUpdate(markingId, markingData)
+        .then(() => {
+            res.status(200).send({ status: "Marking scheme successfully updated!" })
+        })
+        .catch((err) => {
+            console.log(err.message);
+            res.status(500).send({ error: "Error with updating data!" })
         })
 })
 

@@ -105,8 +105,8 @@ router.route("/groupRegister").post(async (req, res) => {
         console.log(student);
         if (student) {
           existed = false;
-          res.status(500).send({
-            status: "One or more student is in the grp",
+          res.status(406).send({
+            status: "One or more studentn the grp",
           });
           return;
         }
@@ -161,41 +161,65 @@ router.route("/groupRegister").post(async (req, res) => {
 });
 
 // Supervisor Request
-router.route("/requestSupervisor").post(protect_student, (req, res) => {
-  const name = req.body.name;
-  const requestedDate = req.body.requestedDate;
+router.route("/requestSupervisor").post((req, res) => {
+  const topic = req.body.topic;
+  const groupId = req.body.groupId;
+  const supervisorId = req.body.supervisorId;
 
   const newRequest = new requestSupervisor({
-    name,
-    requestedDate,
+    topic,
+    groupId,
+    supervisorId,
   });
 
   newRequest
     .save()
-    .then(() => {
+    .then(async () => {
+      const updateGroup = {
+        hasRequestedSupervisor: true,
+      };
+      try {
+        await StudentGroup.findByIdAndUpdate(groupId, updateGroup);
+      } catch (error) {
+        console.log(error);
+      }
+
       res.json("Supervisor request added to the system.");
     })
     .catch((error) => {
+      res.json(error);
       console.log(error);
     });
 });
 
 // CoSupervisor Request
-router.route("/requestCoSupervisor").post(protect_student, (req, res) => {
-  const name = req.body.name;
-  const requestedDate = req.body.requestedDate;
+router.route("/requestCoSupervisor").post((req, res) => {
+  const topic = req.body.topic;
+  const groupId = req.body.groupId;
+  const supervisorId = req.body.supervisorId;
 
   const newRequest = new requestCoSupervisor({
-    name,
-    requestedDate,
+    topic,
+    groupId,
+    supervisorId,
   });
 
   newRequest
     .save()
-    .then(() => {
+    .then(async () => {
+      const updateGroup = {
+        hasRequestedCoSupervisor: true,
+      };
+      try {
+        await StudentGroup.findByIdAndUpdate(groupId, updateGroup);
+      } catch (error) {
+        console.log(error);
+      }
+
       res.json("Supervisor request added to the system.");
     })
     .catch((error) => {
+      res.json(error);
       console.log(error);
     });
 });
@@ -270,17 +294,19 @@ router.route("/registerResearch").post((req, res) => {
 });
 
 // Get all topics
-router.route('/topics').get((req,res) => {
-
-  registerResearch.find().then((researchtopics) => {
-    res.json(researchtopics)
-}).catch((err) => {
-    console.log(err.message)
-    res.status(500).send({
-        status: "Error with listing panels"
+router.route("/topics").get((req, res) => {
+  registerResearch
+    .find()
+    .then((researchtopics) => {
+      res.json(researchtopics);
     })
-})
-})
+    .catch((err) => {
+      console.log(err.message);
+      res.status(500).send({
+        status: "Error with listing panels",
+      });
+    });
+});
 
 // Get all students
 router.route("/").get((req, res) => {
@@ -295,6 +321,7 @@ router.route("/").get((req, res) => {
       });
     });
 });
+
 
 
 //Login
@@ -319,6 +346,54 @@ router.route("/stdlogin").post(async(req, res) => {
         }
 })
 
+});
+
+
+router.route("/getStudent/:id").get((req, res) => {
+  itNumber = req.params.id;
+
+  Student.findOne({
+    itNumber: itNumber,
+  })
+    .then((student) => {
+      res.json(student);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.json(err);
+    });
+});
+
+router.route("/getSupervisorStatus/:id").get((req, res) => {
+  groupId = req.params.id;
+
+  requestSupervisor
+    .findOne({
+      groupId: groupId,
+    })
+    .then((supervisor) => {
+      res.json(supervisor);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.json(err);
+    });
+});
+
+router.route("/getCoSupervisorStatus/:id").get((req, res) => {
+  groupId = req.params.id;
+
+  requestCoSupervisor
+    .findOne({
+      groupId: groupId,
+    })
+    .then((supervisor) => {
+      res.json(supervisor);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.json(err);
+    });
 });
 
 

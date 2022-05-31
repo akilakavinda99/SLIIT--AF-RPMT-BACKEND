@@ -36,7 +36,6 @@ app.use("/student", studentRouter);
 const panelRouter = require("./routes/panel.js")
 app.use("/panels", panelRouter)
 
-
 //Staff routes
 const staffRouter = require("./routes/staff.js");
 app.use("/staff", staffRouter);
@@ -44,6 +43,11 @@ app.use("/staff", staffRouter);
 // Marking routes
 const markingSchemRouter = require("./routes/markingScheme.js");
 app.use("/marking-schemes", markingSchemRouter);
+
+// Submissions routes
+const submissionRouter = require("./routes/submission")
+app.use("/submissions", submissionRouter);
+
 
 app.listen(PORT, () => {
   console.log(`Server is up and running on port ${PORT}`);

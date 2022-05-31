@@ -72,8 +72,31 @@ router.route("/").get((req, res) => {
 })
 
 
+// Get selected panel details
+router.route("/:id").get((req, res) => {
+    const panelId = req.params.id;
+    // console.log(panelId);
+
+    Panel.findById(panelId)
+        .then(panel => {
+            res.status(200)
+                .send({
+                    status: "Panel data fetched.", panel
+                })
+        })
+        .catch(err => {
+            console.log(err.message);
+            res.status(500)
+                .send({
+                    error: "Error with fetching data."
+                })
+        })
+})
+
+
 // Update panel details
-router.route("/update/:id").put((protect), async (req, res) => {
+// router.route("/update/:id").put((protect), async (req, res) => {
+router.route("/update/:id").put(async (req, res) => {
 
     let panelID = req.params.id
     const newData = req.body
@@ -94,7 +117,8 @@ router.route("/update/:id").put((protect), async (req, res) => {
 
 
 // Remove panel
-router.route("/delete/:id").delete((protect), async (req, res) => {
+// router.route("/delete/:id").delete((protect), async (req, res) => {
+router.route("/delete/:id").delete(async (req, res) => {
 
     let panelID = req.params.id
 
