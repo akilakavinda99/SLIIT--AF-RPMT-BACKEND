@@ -120,6 +120,68 @@ router.route('/').get((req, res) => {
         })
 })
 
+// Get accepted staff
+router.route('/accepted').get((req, res) => {
+    Staff.find({ isAccepted: true }, { password: 0 })
+        .then(staff => {
+            res.json(staff)
+        })
+        .catch(err => {
+            console.log(err.message);
+            res.status(500).send({
+                error: "Error with listing staff."
+            })
+        })
+})
+
+// Get pending staff
+router.route('/pending').get((req, res) => {
+    Staff.find({ isAccepted: false }, { password: 0 })
+        .then(staff => {
+            res.json(staff)
+        })
+        .catch(err => {
+            console.log(err.message);
+            res.status(500).send({
+                error: "Error with listing staff."
+            })
+        })
+})
+
+// Accept/Reject staff member
+router.route('/accept-reject/:id').put(async (req, res) => {
+
+    const staffId = req.params.id
+    const acceptStatus = req.body
+    // console.log("id: " + staffId);
+    // console.log(acceptStatus);
+
+    if (acceptStatus.isAccepted) {
+        await Staff.findByIdAndUpdate(staffId, acceptStatus)
+            .then(() => {
+                res.status(200)
+                    .send({ status: "Staff member accepted." })
+            })
+            .catch(err => {
+                console.log(err.message);
+                res.status(500)
+                    .send({ error: "Error with accepting." })
+            })
+    } else {
+        await Staff.findByIdAndDelete(staffId)
+            .then(() => {
+                res.status(200)
+                    .send({ status: "Request rejected." })
+            })
+            .catch(() => {
+                res.status(500)
+                    .send({ error: "Error with rejecting." })
+            })
+    }
+
+
+
+})
 
 //Accept reserch topic
 // router.route("/acceptTopics").post((req, res) => {
@@ -141,7 +203,7 @@ router.route('/').get((req, res) => {
 //     }).catch((err) =>{
 //         console.log(err.message)
 //     })
-    
+
 // })
 
 

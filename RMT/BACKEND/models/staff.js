@@ -1,4 +1,4 @@
-const mongoose =  require("mongoose");
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const staffSchema = new Schema({
@@ -34,6 +34,10 @@ const staffSchema = new Schema({
     panel: {
         type: Object,
         required: false
+    },
+    isAccepted: {
+        type: Boolean,
+        default: false
     }
 })
 
