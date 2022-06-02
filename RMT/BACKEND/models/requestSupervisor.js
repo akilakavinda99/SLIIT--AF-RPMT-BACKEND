@@ -8,7 +8,7 @@ const requestSupervisorSchema = new Schema({
   },
 
   requestedDate: {
-    type: String,
+    type: Date,
     default: Date.now,
   },
   groupId: {
@@ -23,6 +23,7 @@ const requestSupervisorSchema = new Schema({
     type: String,
     required: true,
   },
+  
 });
 
 const requestSupervisor = mongoose.model(

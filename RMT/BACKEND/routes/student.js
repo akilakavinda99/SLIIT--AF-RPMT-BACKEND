@@ -289,7 +289,7 @@ router.route("/registerResearch").post((req, res) => {
 
 // Get all topics
 router.route("/topics").get((req, res) => {
-  registerResearch
+  requestSupervisor
     .find()
     .then((researchtopics) => {
       res.json(researchtopics);

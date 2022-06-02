@@ -8,7 +8,7 @@ const requestCoSupervisorSchema = new Schema({
   },
 
   requestedDate: {
-    type: String,
+    type: Date,
     default: Date.now,
   },
   groupId: {

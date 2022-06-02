@@ -178,33 +178,68 @@ router.route('/accept-reject/:id').put(async (req, res) => {
                     .send({ error: "Error with rejecting." })
             })
     }
-
-
-
 })
 
-//Accept reserch topic
-// router.route("/acceptTopics").post((req, res) => {
 
-//     const studentId = req.body.studentId
-//     const researchTopic = req.body.researchTopic
-//     const status = req.body.status
-//     const approvedDate = req.body.approvedDate
+//Accept Supervisor request
+router.route('/supervisor-accept/:id').put(async (req, res) => {
 
-//     const newTopic = new ResearchTopic({
-//         studentId,
-//         researchTopic,
-//         status,
-//         approvedDate
-//     })
+    const requestId = req.params.id;
+  
+    const updateRequestStatus = {
+      supervisorRequestStatus: "Accepted"
+    }
+    
+    await requestSupervisor.findByIdAndUpdate(requestId, updateRequestStatus)
+    .then(() => {
+      res.status(200).send({
+        status: "Supervisor request accepted"
+      })
+    }).catch((err) => {
+      console.log(err.message)
+      res.status(500).send({
+        status: "Error with accepting request"
+      })
+    })
+  })
+  
+  
+  //Reject Supervisor request
+  router.route('/supervisor-reject/:id/:groupId').put(async (req, res) => {
+  
+    const requestId = req.params.id;
+    const GroupId = req.params.groupId;
+  
+    console.log(GroupId);
+    console.log(requestId);
+  
+    const updateRequestStatus = {
+      supervisorRequestStatus: "Rejected"
+    }
+    
+    await requestSupervisor.findByIdAndUpdate(requestId, updateRequestStatus)
+    .then(async () => {
 
-//     newTopic.save().then(() =>{
-//         res.json("Reasearch topic status update succesfully.")
-//     }).catch((err) =>{
-//         console.log(err.message)
-//     })
+      const studentGroup = {hasRequestedSupervisor: false}
+      await StudentGroup.findByIdAndUpdate(GroupId, studentGroup).then(() =>{
 
-// })
-
+        res.status(200).send({
+          status: "Supervisor request rejected"
+        })
+      }).catch((err) => {
+        console.log(err)
+      })
+  
+      // res.status(200).send({
+      //   status: "Supervisor request rejected"
+      // })
+    }).catch((err) => {
+      console.log(err.message)
+      res.status(500).send({
+        status: "Error with rejecting request"
+      })
+    })
+  
+  })
 
 module.exports = router
