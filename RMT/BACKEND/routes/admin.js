@@ -197,4 +197,21 @@ router.route('/summary').get(async (req, res) => {
 })
 
 
+// Get admin details
+router.route('/profile').post(async (req, res) => {
+
+    const { adminId } = req.body
+    // console.log(adminId);
+
+    Admin.findById(adminId)
+        .then(admin => {
+            res.status(200).send(admin)
+        })
+        .catch(err => {
+            console.log(err.message)
+            res.status(500).send({ error: "Error with fetching data." })
+        })
+})
+
+
 module.exports = router
