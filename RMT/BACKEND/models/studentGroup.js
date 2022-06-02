@@ -38,6 +38,10 @@ const studentGroupSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  groupName: {
+    type: String,
+    required: true,
+  },
 });
 
 const StudentGroup = mongoose.model("StudentGroup", studentGroupSchema);
