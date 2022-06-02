@@ -19,6 +19,11 @@ const requestCoSupervisorSchema = new Schema({
     type: String,
     default: "Pending",
   },
+
+  supervisorId: {
+    type: String,
+    required: true,
+  },
 });
 
 const requestCoSupervisor = mongoose.model(
