@@ -14,10 +14,12 @@ app.use(cors());
 app.use(express.json());
 
 // parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: false }))
+
+// app.use(bodyParser.urlencoded({ extended: false }))
 
 // parse application/json
-app.use(bodyParser.json())
+// app.use(bodyParser.json())
+
 
 
 const URL = process.env.MONGODB_URL;
@@ -46,6 +48,10 @@ app.use("/admins", admintRouter);
 // Student routes
 const studentRouter = require("./routes/student.js");
 app.use("/student", studentRouter);
+
+// Student group route
+const groupRouter = require("./routes/studentGroup.js")
+app.use("/studentGroups", groupRouter)
 
 // Panel routes
 const panelRouter = require("./routes/panel.js")

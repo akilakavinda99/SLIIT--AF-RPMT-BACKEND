@@ -8,7 +8,7 @@ const requestCoSupervisorSchema = new Schema({
   },
 
   requestedDate: {
-    type: String,
+    type: Date,
     default: Date.now,
   },
   groupId: {
@@ -18,6 +18,11 @@ const requestCoSupervisorSchema = new Schema({
   supervisorRequestStatus: {
     type: String,
     default: "Pending",
+  },
+
+  supervisorId: {
+    type: String,
+    required: true,
   },
 });
 

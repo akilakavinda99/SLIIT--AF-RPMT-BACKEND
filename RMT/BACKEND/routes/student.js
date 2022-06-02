@@ -64,6 +64,7 @@ router.route("/add").post((req, res) => {
 //Group Register
 router.route("/groupRegister").post(async (req, res) => {
   const leaderName = req.body.leaderName;
+  const groupName = req.body.groupName;
   const firstMember = req.body.firstMember;
   const secondMember = req.body.secondMember;
   const thirdMember = req.body.thirdMember;
@@ -74,6 +75,7 @@ router.route("/groupRegister").post(async (req, res) => {
     firstMember,
     secondMember,
     thirdMember,
+    groupName,
   });
 
   var existed = true;
@@ -126,38 +128,55 @@ router.route("/groupRegister").post(async (req, res) => {
   console.log("sdsd");
 
   if (existed) {
-    newStudentGroup
-      .save()
-      .then(async () => {
-        const studentUpdate = {
-          hasGroup: true,
-          groupId: newStudentGroup._id,
-        };
+    StudentGroup.find({
+      groupName: groupName,
+    })
+      .then((group) => {
+        console.log(group);
+        if (group.length == 0) {
+          newStudentGroup
+            .save()
+            .then(async () => {
+              const studentUpdate = {
+                hasGroup: true,
+                groupId: newStudentGroup._id,
+              };
 
-        console.log(studentUpdate);
-        console.log(IdArray);
-        for (let index = 0; index < IdArray.length; index++) {
-          const id = IdArray[index];
-          console.log(id);
+              console.log(studentUpdate);
+              console.log(IdArray);
+              for (let index = 0; index < IdArray.length; index++) {
+                const id = IdArray[index];
+                console.log(id);
 
-          try {
-            await Student.findOneAndUpdate({ itNumber: id }, studentUpdate);
-            console.log("sdsdwwe");
-          } catch (err) {
-            console.log(err);
-          }
-          console.log("sdsff");
+                try {
+                  await Student.findOneAndUpdate(
+                    { itNumber: id },
+                    studentUpdate
+                  );
+                  console.log("sdsdwwe");
+                } catch (err) {
+                  console.log(err);
+                }
+                console.log("sdsff");
+              }
+              console.log("New admin added to the system.");
+              res.status(200).send({
+                status: "New admin added to the system.",
+              });
+            })
+
+            .catch((err) => {
+              console.log(err.message);
+              res.status(500).send({
+                error: "Error with adding new admin.",
+              });
+            });
+        } else {
+          res.status(406).send({
+            status: "Group name is not available",
+          });
+          console.log("group name not available");
         }
-        console.log("New admin added to the system.");
-        res.status(200).send({
-          status: "New admin added to the system.",
-        });
-      })
-      .catch((err) => {
-        console.log(err.message);
-        res.status(500).send({
-          error: "Error with adding new admin.",
-        });
       })
 
       .catch((err) => {
@@ -335,6 +354,20 @@ router.route("/get/:id").get(async (req, res) => {
     });
 });
 
+router.route("/delete/:id").delete(async (req, res) => {
+  const id = req.params.id;
+  const groupID = req.params.groupID;
+
+  await Student.findByIdAndRemove(id)
+    .then((student) => {
+      StudentGroup.findByIdAndUpdate({});
+      res.status(200).send({ status: "student deleted" });
+    })
+    .catch((e) => {
+      res.status(500).send({ status: "Error" });
+    });
+});
+
 //get one group details
 router.route("/getGroup/:id").get(async (req, res) => {
   const id = req.params.id;
@@ -351,11 +384,10 @@ router.route("/getGroup/:id").get(async (req, res) => {
 //update student details
 router.route("/update/:id").put(async (req, res) => {
   const id = req.params.id;
-  const { name, itNumber, email, password } = req.body;
+  const { name, email, password } = req.body;
 
   const updateStudent = {
     name,
-    itNumber,
     email,
     password,
   };
@@ -392,8 +424,12 @@ router.route("/registerResearch").post((req, res) => {
 });
 
 // Get all topics
-router.route("/topics").get((verifyJWT),(req, res) => {
-  registerResearch
+
+// router.route("/topics").get((verifyJWT),(req, res) => {
+//   registerResearch
+
+router.route("/topics").get((req, res) => {
+  requestSupervisor
     .find()
     .then((researchtopics) => {
       res.json(researchtopics);
