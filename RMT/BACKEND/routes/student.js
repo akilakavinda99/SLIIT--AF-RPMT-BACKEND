@@ -6,24 +6,25 @@ let requestCoSupervisor = require("../models/requestCoSupervisor.js");
 let registerResearch = require("../models/registerResearchTopic.js");
 let StudentGroup = require("../models/studentGroup");
 
-let Staff = require('../models/staff')
+let Staff = require("../models/staff");
 
 const { protect } = require("../middleware/authMiddleware");
 const { protect_student } = require("../middleware/authMiddleware_student");
 const { application } = require("express");
 
-const ROLES_LIST=require('../config/roles_list')
-const verifyRoles=require('../middleware/verifyRoles');
+const ROLES_LIST = require("../config/roles_list");
+const verifyRoles = require("../middleware/verifyRoles");
 const verifyJWT = require("../middleware/verifyJWT");
 
-
 // Add new Student to the system
-router.route("/add").post((req, res) => {
+router.route("/add").post(async (req, res) => {
+  const saltPassword = await bcrypt.genSalt(10);
+  const securePassword = await bcrypt.hash(req.body.password, saltPassword);
+
   const name = req.body.name;
   const itNumber = req.body.itNumber;
   const email = req.body.email;
-  const password = req.body.password;
-  console.log(email);
+  const password = securePassword;
 
   const newStudent = new Student({
     name,
@@ -57,9 +58,6 @@ router.route("/add").post((req, res) => {
       res.send("Error: " + err.message);
     });
 });
-
-
-
 
 //Group Register
 router.route("/groupRegister").post(async (req, res) => {
@@ -187,21 +185,33 @@ router.route("/groupRegister").post(async (req, res) => {
 });
 
 // Supervisor Request
-router.route("/requestSupervisor").post(protect_student, (req, res) => {
-  const name = req.body.name;
-  const requestedDate = req.body.requestedDate;
+router.route("/requestSupervisor").post((req, res) => {
+  const topic = req.body.topic;
+  const groupId = req.body.groupId;
+  const supervisorId = req.body.supervisorId;
 
   const newRequest = new requestSupervisor({
-    name,
-    requestedDate,
+    topic,
+    groupId,
+    supervisorId,
   });
 
   newRequest
     .save()
-    .then(() => {
+    .then(async () => {
+      const updateGroup = {
+        hasRequestedSupervisor: true,
+      };
+      try {
+        await StudentGroup.findByIdAndUpdate(groupId, updateGroup);
+      } catch (error) {
+        console.log(error);
+      }
+
       res.json("Supervisor request added to the system.");
     })
     .catch((error) => {
+      res.json(error);
       console.log(error);
     });
 });
@@ -226,7 +236,6 @@ router.route("/requestSupervisor").post(protect_student, (req, res) => {
 //   });
 // });
 
-
 // router.route("/stdlogin").post(async (req, res) => {
 
 //   const email = req.body.email;
@@ -234,8 +243,6 @@ router.route("/requestSupervisor").post(protect_student, (req, res) => {
 //   const password = req.body.password;
 
 //   console.log(email);
-
-
 
 //   await Student.findOne({
 
@@ -263,80 +270,82 @@ router.route("/requestSupervisor").post(protect_student, (req, res) => {
 
 //     });
 
-
-
-
 // });
 
- 
 router.route("/stdlogin").post(async (req, res) => {
-    const username = req.body.username
-    const password = req.body.password
- 
-    await Student.findOne({ itNumber: username })
-        .then(student => {
-            if (student) {
-                // if(bcrypt.compareSync(password, student.password)){
-                if (password == student.password) {
-                    res.json({
-                        status: "Successfully logged in as a Student.",
-                        student: student
-                    })
-                }
-                else {
-                    res.json({
-                        status: "Password doesn't match."
-                    })
-                }
-            }
-            else {
-                Staff.findOne({ email: username })
-                    .then(staff => {
-                        if (staff) {
-                            if (bcrypt.compareSync(password, staff.password)) {
-                                res.json({
-                                    status: "Successfully logged in as Staff.",
-                                    staff: staff
-                                })
-                            }
-                            else {
-                                res.json({
-                                    status: "Password doesn't match."
-                                })
-                            }
-                        }
-                        else {
-                            res.json({ status: "No user found" })
-                        }
-                    })
-                    .catch(err => {
-                        console.log(err);
-                    })
-            }
-        })
-        .catch(err => {
-            console.log(err);
-        })
-})
- 
+  const username = req.body.username;
+  const password = req.body.password;
 
+  await Student.findOne({ itNumber: username })
+    .then((student) => {
+      if (student) {
+        // if(bcrypt.compareSync(password, student.password)){
+        if (password == student.password) {
+          res.json({
+            status: "Successfully logged in as a Student.",
+            student: student,
+          });
+        } else {
+          res.json({
+            status: "Password doesn't match.",
+          });
+        }
+      } else {
+        Staff.findOne({ email: username })
+          .then((staff) => {
+            if (staff) {
+              if (bcrypt.compareSync(password, staff.password)) {
+                res.json({
+                  status: "Successfully logged in as Staff.",
+                  staff: staff,
+                });
+              } else {
+                res.json({
+                  status: "Password doesn't match.",
+                });
+              }
+            } else {
+              res.json({ status: "No user found" });
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
 
 // CoSupervisor Request
-router.route("/requestCoSupervisor").post(protect_student, (req, res) => {
-  const name = req.body.name;
-  const requestedDate = req.body.requestedDate;
+router.route("/requestCoSupervisor").post((req, res) => {
+  const topic = req.body.topic;
+  const groupId = req.body.groupId;
+  const supervisorId = req.body.supervisorId;
 
   const newRequest = new requestCoSupervisor({
-    name,
-    requestedDate,
+    topic,
+    groupId,
+    supervisorId,
   });
 
   newRequest
     .save()
-    .then(() => {
+    .then(async () => {
+      const updateGroup = {
+        hasRequestedCoSupervisor: true,
+      };
+      try {
+        await StudentGroup.findByIdAndUpdate(groupId, updateGroup);
+      } catch (error) {
+        console.log(error);
+      }
+
       res.json("Supervisor request added to the system.");
     })
     .catch((error) => {
+      res.json(error);
       console.log(error);
     });
 });
@@ -457,5 +466,52 @@ router.route("/").get((req, res) => {
 });
 
 //Login
+
+router.route("/getStudent/:id").get((req, res) => {
+  itNumber = req.params.id;
+
+  Student.findOne({
+    itNumber: itNumber,
+  })
+    .then((student) => {
+      res.json(student);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.json(err);
+    });
+});
+
+router.route("/getSupervisorStatus/:id").get((req, res) => {
+  groupId = req.params.id;
+
+  requestSupervisor
+    .findOne({
+      groupId: groupId,
+    })
+    .then((supervisor) => {
+      res.json(supervisor);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.json(err);
+    });
+});
+
+router.route("/getCoSupervisorStatus/:id").get((req, res) => {
+  groupId = req.params.id;
+
+  requestCoSupervisor
+    .findOne({
+      groupId: groupId,
+    })
+    .then((supervisor) => {
+      res.json(supervisor);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.json(err);
+    });
+});
 
 module.exports = router;
