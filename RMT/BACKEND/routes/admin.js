@@ -122,22 +122,23 @@ router.route("/").get((req, res) => {
 
 
 // Update admin details
-router.route("/update/:id").put((protect), async (req, res) => {
+// router.route("/update").put((protect), async (req, res) => {
+router.route("/update").put(async (req, res) => {
 
-    let adminID = req.params.id
+    let admin = req.body
 
-    const updateAdmin = {
-        firstname: req.body.name,
-        lastname: req.body.lastname,
-        nameWithInitials: req.body.nameWithInitials,
-        address: req.body.address,
-        nic: req.body.nic,
-        email: req.body.email,
-        mobile: req.body.mobile,
-        landline: req.body.landline,
-    }
+    // const updateAdmin = {
+    //     firstname: req.body.name,
+    //     lastname: req.body.lastname,
+    //     nameWithInitials: req.body.nameWithInitials,
+    //     address: req.body.address,
+    //     nic: req.body.nic,
+    //     email: req.body.email,
+    //     mobile: req.body.mobile,
+    //     landline: req.body.landline,
+    // }
 
-    await Admin.findByIdAndUpdate(adminID, updateAdmin)
+    await Admin.findByIdAndUpdate(admin._id, admin)
         .then(() => {
             res.status(200).send({
                 status: "User updated."
