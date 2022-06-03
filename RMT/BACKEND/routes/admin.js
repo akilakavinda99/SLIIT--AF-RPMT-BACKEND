@@ -178,7 +178,7 @@ router.route("/delete/:id").delete((protect), async (req, res) => {
 
 
 // Get dashboard summary
-router.route('/summary').get((verifyJWT), async (req, res) => {
+router.route('/summary').get([(verifyJWT),(verifyRoles(ROLES_LIST.admin))], async (req, res) => {
     try {
         const staffCount = await Staff.estimatedDocumentCount()
         const studentCount = await Student.estimatedDocumentCount()
