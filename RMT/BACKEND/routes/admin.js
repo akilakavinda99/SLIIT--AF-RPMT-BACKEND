@@ -199,7 +199,7 @@ router.route('/summary').get((verifyJWT), async (req, res) => {
 
 
 // Get admin details
-router.route('/profile').post(async (req, res) => {
+router.route('/profile').post((verifyJWT), async (req, res) => {
 
     const { adminId } = req.body
     // console.log(adminId);
@@ -216,10 +216,34 @@ router.route('/profile').post(async (req, res) => {
 
 
 // Change password
-router.route('/changePass').post(async (req, res) => {
+router.route('/changePass').put((verifyJWT), async (req, res) => {
 
-    const { adminId } = req.body
-    console.log(req.body);
+    const { adminId, currentPass, newPass, confirmPass } = req.body
+
+    Admin.findById(adminId)
+        .then(admin => {
+            if (bcrypt.compareSync(currentPass, admin.password)) {
+                if (newPass === confirmPass) {
+                    const hashedPass = bcrypt.hashSync(newPass, 10)
+                    Admin.findByIdAndUpdate(adminId, { password: hashedPass })
+                        .then(() => {
+                            res.send({ status: "Password successfully changed." })
+                        })
+                        .catch(err => {
+                            console.log(err.message);
+                            res.send({ error: "Internal server error!" })
+                        })
+                } else {
+                    res.send({ error: "New password and confirm password doesn't match!" })
+                }
+            } else {
+                res.send({ error: "Invalid current password!" })
+            }
+        })
+        .catch(err => {
+            console.log(err.message);
+            res.send({ error: "Error with user action!" })
+        })
 })
 
 
