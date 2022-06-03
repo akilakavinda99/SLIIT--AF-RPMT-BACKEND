@@ -32,7 +32,7 @@ router.route("/login").post(async (req, res) => {
           const accessToken = jwt.sign(
             {
               UserInfo: {
-                username: foundUser.username,
+                uname: foundUser.username,
                 roles: roles,
               },
             },
@@ -79,11 +79,12 @@ router.route("/login").post(async (req, res) => {
                 // })
                 const roles = foundUser.roles;
                 const uname = foundUser._id;
-
+                
+                // console.log("hi");
                 const accessToken = jwt.sign(
                   {
                     UserInfo: {
-                      username: foundUser.username,
+                      uname: foundUser.username,
                       roles: roles,
                     },
                   },
@@ -102,7 +103,7 @@ router.route("/login").post(async (req, res) => {
                 // console.log(roles);
 
                 // Creates Secure Cookie with refresh token
-                res.cookie("jwt", refreshToken, {
+                res.cookie("jwt", accessToken, {
                   httpOnly: true,
                   secure: true,
                   sameSite: "None",
