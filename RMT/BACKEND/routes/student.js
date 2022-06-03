@@ -60,7 +60,7 @@ router.route("/add").post(async (req, res) => {
 });
 
 //Group Register
-router.route("/groupRegister").post(async (req, res) => {
+router.route("/groupRegister").post([(verifyJWT), (verifyRoles(ROLES_LIST.admin, ROLES_LIST.Student))], async (req, res) => {
   const leaderName = req.body.leaderName;
   const groupName = req.body.groupName;
   const firstMember = req.body.firstMember;
@@ -185,7 +185,7 @@ router.route("/groupRegister").post(async (req, res) => {
 });
 
 // Supervisor Request
-router.route("/requestSupervisor").post((req, res) => {
+router.route("/requestSupervisor").post([(verifyJWT), (verifyRoles(ROLES_LIST.admin, ROLES_LIST.Student))], (req, res) => {
   const topic = req.body.topic;
   const groupId = req.body.groupId;
   const supervisorId = req.body.supervisorId;
@@ -319,7 +319,7 @@ router.route("/stdlogin").post(async (req, res) => {
 });
 
 // CoSupervisor Request
-router.route("/requestCoSupervisor").post((req, res) => {
+router.route("/requestCoSupervisor").post([(verifyJWT), (verifyRoles(ROLES_LIST.admin, ROLES_LIST.Student))], (req, res) => {
   const topic = req.body.topic;
   const groupId = req.body.groupId;
   const supervisorId = req.body.supervisorId;
@@ -351,7 +351,7 @@ router.route("/requestCoSupervisor").post((req, res) => {
 });
 
 //get one students details
-router.route("/get/:id").get(async (req, res) => {
+router.route("/get/:id").get((verifyJWT), async (req, res) => {
   const id = req.params.id;
 
   await Student.findById(id)
@@ -363,7 +363,7 @@ router.route("/get/:id").get(async (req, res) => {
     });
 });
 
-router.route("/delete/:id").delete(async (req, res) => {
+router.route("/delete/:id").delete([(verifyJWT), (verifyRoles(ROLES_LIST.admin))], async (req, res) => {
   const id = req.params.id;
   const groupID = req.params.groupID;
 
@@ -378,7 +378,7 @@ router.route("/delete/:id").delete(async (req, res) => {
 });
 
 //get one group details
-router.route("/getGroup/:id").get(async (req, res) => {
+router.route("/getGroup/:id").get((verifyJWT), async (req, res) => {
   const id = req.params.id;
 
   await StudentGroup.findById(id)
@@ -391,7 +391,7 @@ router.route("/getGroup/:id").get(async (req, res) => {
 });
 
 //update student details
-router.route("/update/:id").put(async (req, res) => {
+router.route("/update/:id").put([(verifyJWT), (verifyRoles(ROLES_LIST.admin, ROLES_LIST.Student))], async (req, res) => {
   const id = req.params.id;
   const { name, email, password } = req.body;
 
@@ -411,7 +411,7 @@ router.route("/update/:id").put(async (req, res) => {
 });
 
 // Register Research Topic
-router.route("/registerResearch").post((req, res) => {
+router.route("/registerResearch").post((verifyJWT), (req, res) => {
   const name = req.body.name;
   const topic = req.body.topic;
   const groupId = req.body.groupId;
@@ -437,7 +437,7 @@ router.route("/registerResearch").post((req, res) => {
 // router.route("/topics").get((verifyJWT),(req, res) => {
 //   registerResearch
 
-router.route("/topics").get((req, res) => {
+router.route("/topics").get((verifyJWT), (req, res) => {
   requestSupervisor
     .find()
     .then((researchtopics) => {
@@ -452,7 +452,7 @@ router.route("/topics").get((req, res) => {
 });
 
 // Get all students
-router.route("/").get((req, res) => {
+router.route("/").get([(verifyJWT), (verifyRoles(ROLES_LIST.admin))], (req, res) => {
   Student.find({}, { password: 0 })
     .then((student) => {
       res.json(student);
@@ -467,7 +467,7 @@ router.route("/").get((req, res) => {
 
 //Login
 
-router.route("/getStudent/:id").get((req, res) => {
+router.route("/getStudent/:id").get((verifyJWT), (req, res) => {
   itNumber = req.params.id;
 
   Student.findOne({
@@ -482,7 +482,7 @@ router.route("/getStudent/:id").get((req, res) => {
     });
 });
 
-router.route("/getSupervisorStatus/:id").get((req, res) => {
+router.route("/getSupervisorStatus/:id").get((verifyJWT), (req, res) => {
   groupId = req.params.id;
 
   requestSupervisor
@@ -498,7 +498,7 @@ router.route("/getSupervisorStatus/:id").get((req, res) => {
     });
 });
 
-router.route("/getCoSupervisorStatus/:id").get((req, res) => {
+router.route("/getCoSupervisorStatus/:id").get((verifyJWT), (req, res) => {
   groupId = req.params.id;
 
   requestCoSupervisor

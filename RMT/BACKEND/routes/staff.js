@@ -6,6 +6,9 @@ let ResearchTopic = require("../models/acceptTopics");
 const { protect } = require("../middleware/authMiddleware");
 const { protect_staff } = require("../middleware/authMiddleware_staff");
 const StudentGroup = require("../models/studentGroup.js");
+const verifyJWT = require("../middleware/verifyJWT.js");
+const ROLES_LIST = require("../config/roles_list.js");
+const verifyRoles = require("../middleware/verifyRoles.js");
 
 //Login
 // router.route("/login").post((req, res) => {
@@ -66,7 +69,7 @@ router.route("/add").post(async (req, res) => {
 
 // Get staff member details
 // router.route("/get/:id").get((protect_staff),async(req, res)=> {
-router.route("/get/:id").get(async (req, res) => {
+router.route("/get/:id").get((verifyJWT), async (req, res) => {
   const staffId = req.params.id;
 
   await Staff.findById(staffId)
@@ -80,7 +83,7 @@ router.route("/get/:id").get(async (req, res) => {
 });
 
 //get according to field
-router.route("/getToField/:id").get(async (req, res) => {
+router.route("/getToField/:id").get((verifyJWT), async (req, res) => {
   const field = req.params.id;
 
   await Staff.find({
@@ -96,7 +99,7 @@ router.route("/getToField/:id").get(async (req, res) => {
 });
 
 //Update staff member details
-router.route("/update/:id").put(protect_staff, async (req, res) => {
+router.route("/update/:id").put([(verifyJWT), (verifyRoles(ROLES_LIST.admin, ROLES_LIST.Staff))], async (req, res) => {
   let staffId = req.params.id;
 
   const updateStaff = {
@@ -124,7 +127,7 @@ router.route("/update/:id").put(protect_staff, async (req, res) => {
 });
 
 // Get all staff
-router.route("/").get((req, res) => {
+router.route("/").get([(verifyJWT), (verifyRoles(ROLES_LIST.admin))], (req, res) => {
   Staff.find({}, { password: 0 })
     .then((staff) => {
       res.json(staff);
@@ -138,7 +141,7 @@ router.route("/").get((req, res) => {
 });
 
 // Get accepted staff
-router.route("/accepted").get((req, res) => {
+router.route("/accepted").get((verifyJWT), (req, res) => {
   Staff.find({ isAccepted: true }, { password: 0 })
     .then((staff) => {
       res.json(staff);
@@ -152,7 +155,7 @@ router.route("/accepted").get((req, res) => {
 });
 
 // Get pending staff
-router.route("/pending").get((req, res) => {
+router.route("/pending").get([(verifyJWT), (verifyRoles(ROLES_LIST.admin))], (req, res) => {
   Staff.find({ isAccepted: false }, { password: 0 })
     .then((staff) => {
       res.json(staff);
@@ -166,7 +169,7 @@ router.route("/pending").get((req, res) => {
 });
 
 // Accept/Reject staff member
-router.route("/accept-reject/:id").put(async (req, res) => {
+router.route("/accept-reject/:id").put([(verifyJWT), (verifyRoles(ROLES_LIST.admin))], async (req, res) => {
   const staffId = req.params.id;
   const acceptStatus = req.body;
   // console.log("id: " + staffId);
@@ -193,7 +196,7 @@ router.route("/accept-reject/:id").put(async (req, res) => {
 });
 
 //Accept Supervisor request
-router.route("/supervisor-accept/:id/:groupId").put(async (req, res) => {
+router.route("/supervisor-accept/:id/:groupId").put([(verifyJWT), (verifyRoles(ROLES_LIST.Staff))], async (req, res) => {
   const requestId = req.params.id;
   const GroupId = req.params.groupId;
   const supervisorId = req.body.supervisorId;
@@ -221,7 +224,7 @@ router.route("/supervisor-accept/:id/:groupId").put(async (req, res) => {
 });
 
 //Reject Supervisor request
-router.route("/supervisor-reject/:id/:groupId").put(async (req, res) => {
+router.route("/supervisor-reject/:id/:groupId").put([(verifyJWT), (verifyRoles(ROLES_LIST.Staff))], async (req, res) => {
   const requestId = req.params.id;
   const GroupId = req.params.groupId;
 

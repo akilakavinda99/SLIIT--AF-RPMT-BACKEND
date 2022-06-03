@@ -7,7 +7,7 @@ const verifyRoles = require("../middleware/verifyRoles")
 const ROLES_LIST = require("../config/roles_list.js")
 
 // Get all student groups
-router.route('/').get((req, res) => {
+router.route('/').get([(verifyJWT), (verifyRoles(ROLES_LIST.admin, ROLES_LIST.Staff))], (req, res) => {
     StudentGroup.find()
         .then(groups => {
             res.status(200).send({
