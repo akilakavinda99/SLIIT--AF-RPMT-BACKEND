@@ -195,9 +195,6 @@ router.route('/summary').get((verifyJWT), async (req, res) => {
     } catch (err) {
         res.status(500).send({ error: err.message })
     }
-
-
-
 })
 
 
@@ -215,6 +212,14 @@ router.route('/profile').post(async (req, res) => {
             console.log(err.message)
             res.status(500).send({ error: "Error with fetching data." })
         })
+})
+
+
+// Change password
+router.route('/changePass').post(async (req, res) => {
+
+    const { adminId } = req.body
+    console.log(req.body);
 })
 
 

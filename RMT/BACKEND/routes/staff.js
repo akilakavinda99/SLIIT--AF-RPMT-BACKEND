@@ -5,6 +5,7 @@ let ResearchTopic = require("../models/acceptTopics");
 
 const { protect } = require("../middleware/authMiddleware");
 const { protect_staff } = require("../middleware/authMiddleware_staff");
+const StudentGroup = require("../models/studentGroup.js");
 
 //Login
 // router.route("/login").post((req, res) => {
@@ -191,67 +192,70 @@ router.route("/accept-reject/:id").put(async (req, res) => {
   }
 });
 
-
 //Accept Supervisor request
-router.route('/supervisor-accept/:id').put(async (req, res) => {
+router.route("/supervisor-accept/:id/:groupId").put(async (req, res) => {
+  const requestId = req.params.id;
+  const GroupId = req.params.groupId;
+  const supervisorId = req.body.supervisorId;
 
-    const requestId = req.params.id;
-  
-    const updateRequestStatus = {
-      supervisorRequestStatus: "Accepted"
-    }
-    
-    await requestSupervisor.findByIdAndUpdate(requestId, updateRequestStatus)
-    .then(() => {
-      res.status(200).send({
-        status: "Supervisor request accepted"
-      })
-    }).catch((err) => {
-      console.log(err.message)
-      res.status(500).send({
-        status: "Error with accepting request"
-      })
-    })
-  })
-  
-  
-  //Reject Supervisor request
-  router.route('/supervisor-reject/:id/:groupId').put(async (req, res) => {
-  
-    const requestId = req.params.id;
-    const GroupId = req.params.groupId;
-  
-    console.log(GroupId);
-    console.log(requestId);
-  
-    const updateRequestStatus = {
-      supervisorRequestStatus: "Rejected"
-    }
-    
-    await requestSupervisor.findByIdAndUpdate(requestId, updateRequestStatus)
+  const updateRequestStatus = {
+    supervisorRequestStatus: "Accepted",
+  };
+
+  await requestSupervisor
+    .findByIdAndUpdate(requestId, updateRequestStatus)
     .then(async () => {
-
-      const studentGroup = {hasRequestedSupervisor: false}
-      await StudentGroup.findByIdAndUpdate(GroupId, studentGroup).then(() =>{
-
+      const studentGroup = { supervisorId: supervisorId };
+      await StudentGroup.findByIdAndUpdate(GroupId, studentGroup).then(() => {
         res.status(200).send({
-          status: "Supervisor request rejected"
+          status: "Supervisor request accepted",
+        });
+      });
+    })
+    .catch((err) => {
+      console.log(err.message);
+      res.status(500).send({
+        status: "Error with accepting request",
+      });
+    });
+});
+
+//Reject Supervisor request
+router.route("/supervisor-reject/:id/:groupId").put(async (req, res) => {
+  const requestId = req.params.id;
+  const GroupId = req.params.groupId;
+
+  console.log(GroupId);
+  console.log(requestId);
+
+  const updateRequestStatus = {
+    supervisorRequestStatus: "Rejected",
+  };
+
+  await requestSupervisor
+    .findByIdAndUpdate(requestId, updateRequestStatus)
+    .then(async () => {
+      const studentGroup = { hasRequestedSupervisor: false };
+      await StudentGroup.findByIdAndUpdate(GroupId, studentGroup)
+        .then(() => {
+          res.status(200).send({
+            status: "Supervisor request rejected",
+          });
         })
-      }).catch((err) => {
-        console.log(err)
-      })
-  
+        .catch((err) => {
+          console.log(err);
+        });
+
       // res.status(200).send({
       //   status: "Supervisor request rejected"
       // })
-    }).catch((err) => {
-      console.log(err.message)
-      res.status(500).send({
-        status: "Error with rejecting request"
-      })
     })
-  
-  })
+    .catch((err) => {
+      console.log(err.message);
+      res.status(500).send({
+        status: "Error with rejecting request",
+      });
+    });
+});
 
 module.exports = router;
-
