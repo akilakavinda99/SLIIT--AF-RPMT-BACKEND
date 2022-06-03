@@ -42,6 +42,10 @@ const studentGroupSchema = new Schema({
     type: String,
     required: true,
   },
+  supervisorId: {
+    type: String,
+    default: "No Supervisor Yet",
+  },
 });
 
 const StudentGroup = mongoose.model("StudentGroup", studentGroupSchema);
