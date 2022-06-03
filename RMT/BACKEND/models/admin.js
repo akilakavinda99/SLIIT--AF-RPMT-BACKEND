@@ -40,6 +40,11 @@ const adminSchema = new Schema({
         required: true
     },
 
+    roles:{
+        type:Number,
+        default:2001
+    }
+
 
 })
 

@@ -39,15 +39,18 @@ connection.once("open", () => {
 const loginRouter=require("./routes/login");
 // const verifyJWT = require("./middleware/verifyJWT.js");
 app.use("/main",loginRouter);
-app.use(verifyJWT);
+
+// Student routes
+const studentRouter = require("./routes/student.js");
+app.use("/student", studentRouter);
+
+// app.use(verifyJWT);
 
 // Admin routes
 const admintRouter = require("./routes/admin.js");
 app.use("/admins", admintRouter);
 
-// Student routes
-const studentRouter = require("./routes/student.js");
-app.use("/student", studentRouter);
+
 
 // Student group route
 const groupRouter = require("./routes/studentGroup.js")

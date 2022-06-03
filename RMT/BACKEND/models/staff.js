@@ -38,6 +38,11 @@ const staffSchema = new Schema({
     isAccepted: {
         type: Boolean,
         default: false
+    },
+    
+    roles:{
+        type:Number,
+        default:5150
     }
 })
 
