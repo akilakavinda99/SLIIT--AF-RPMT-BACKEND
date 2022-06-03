@@ -4,7 +4,9 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const app = express();
+const verifyJWT = require('./middleware/verifyJWT');
 require("dotenv").config();
+
 
 const PORT = process.env.PORT || 8070;
 
@@ -12,10 +14,12 @@ app.use(cors());
 app.use(express.json());
 
 // parse application/x-www-form-urlencoded
+
 // app.use(bodyParser.urlencoded({ extended: false }))
 
 // parse application/json
 // app.use(bodyParser.json())
+
 
 
 const URL = process.env.MONGODB_URL;
@@ -31,13 +35,22 @@ connection.once("open", () => {
   console.log("Mongodb connection success!");
 });
 
-// Admin routes
-const admintRouter = require("./routes/admin.js");
-app.use("/admins", admintRouter);
+//Login routes
+const loginRouter=require("./routes/login");
+// const verifyJWT = require("./middleware/verifyJWT.js");
+app.use("/main",loginRouter);
 
 // Student routes
 const studentRouter = require("./routes/student.js");
 app.use("/student", studentRouter);
+
+app.use(verifyJWT);
+
+// Admin routes
+const admintRouter = require("./routes/admin.js");
+app.use("/admins", admintRouter);
+
+
 
 // Student group route
 const groupRouter = require("./routes/studentGroup.js")
@@ -58,6 +71,9 @@ app.use("/marking-schemes", markingSchemRouter);
 // Submissions routes
 const submissionRouter = require("./routes/submission")
 app.use("/submissions", submissionRouter);
+
+
+
 
 
 app.listen(PORT, () => {

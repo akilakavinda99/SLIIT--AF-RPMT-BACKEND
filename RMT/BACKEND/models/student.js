@@ -26,7 +26,13 @@ const studentSchema = new Schema({
     groupId :{
         type: String,
         default:'No Group Yet'
+    },
+
+    roles:{
+        type:Number,
+        default:1984
     }
+
 
 
 
