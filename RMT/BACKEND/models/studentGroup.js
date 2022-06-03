@@ -18,7 +18,18 @@ const studentGroupSchema = new Schema({
     type: String,
     required: true,
   },
-
+  topicEvaluationPanel: {
+    type: String,
+    required: false,
+  },
+  presentationPanel: {
+    type: Object,
+    required: false,
+  },
+  topicEvaluationPanel: {
+    type: Object,
+    required: false
+  },
   hasRequestedSupervisor: {
     type: Boolean,
     default: false,
