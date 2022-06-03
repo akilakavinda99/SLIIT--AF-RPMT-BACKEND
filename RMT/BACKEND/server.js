@@ -44,7 +44,7 @@ app.use("/main",loginRouter);
 const studentRouter = require("./routes/student.js");
 app.use("/student", studentRouter);
 
-// app.use(verifyJWT);
+app.use(verifyJWT);
 
 // Admin routes
 const admintRouter = require("./routes/admin.js");

@@ -9,6 +9,9 @@ let StudentGroup = require("../models/studentGroup")
 let Panel = require("../models/panel")
 
 const { protect } = require('../middleware/authMiddleware')
+const verifyJWT = require("../middleware/verifyJWT.js")
+const verifyRoles = require("../middleware/verifyRoles")
+const ROLES_LIST = require("../config/roles_list.js")
 
 // Generate a random password
 const generatePass = (length) => {
@@ -104,8 +107,8 @@ router.route("/add").post((req, res) => {
 
 
 // Get all admin details
-// router.route("/").get((protect), (req, res) => {
-router.route("/").get((req, res) => {
+router.route("/").get((verifyJWT), (req, res) => {
+    // router.route("/").get((req, res) => {
 
     Admin.find({}, { password: 0 })
         .then((admin) => {
@@ -175,7 +178,7 @@ router.route("/delete/:id").delete((protect), async (req, res) => {
 
 
 // Get dashboard summary
-router.route('/summary').get(async (req, res) => {
+router.route('/summary').get((verifyJWT), async (req, res) => {
     try {
         const staffCount = await Staff.estimatedDocumentCount()
         const studentCount = await Student.estimatedDocumentCount()
