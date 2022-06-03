@@ -22,13 +22,9 @@ const studentGroupSchema = new Schema({
     type: String,
     required: false,
   },
-  presentationPanel: {
+  allocatedPanel: {
     type: Object,
     required: false,
-  },
-  topicEvaluationPanel: {
-    type: Object,
-    required: false
   },
   hasRequestedSupervisor: {
     type: Boolean,
