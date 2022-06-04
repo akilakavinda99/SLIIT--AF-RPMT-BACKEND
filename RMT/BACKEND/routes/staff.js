@@ -11,6 +11,7 @@ const requestCoSupervisor = require("../models/requestCoSupervisor.js");
 const verifyJWT = require("../middleware/verifyJWT.js");
 const ROLES_LIST = require("../config/roles_list.js");
 const verifyRoles = require("../middleware/verifyRoles.js");
+const requestSupervisor = require("../models/requestSupervisor.js");
 
 //Login
 // router.route("/login").post((req, res) => {
@@ -228,7 +229,7 @@ router.route("/accept-reject/:id").put([(verifyJWT), (verifyRoles(ROLES_LIST.adm
 });
 
 //Accept Supervisor request
-router.route("/supervisor-accept/:id/:groupId").put([(verifyJWT), (verifyRoles(ROLES_LIST.Staff))], async (req, res) => {
+router.route("/supervisor-accept/:id/:groupId").put([(verifyJWT), (verifyRoles(ROLES_LIST.admin))], async (req, res) => {
   const requestId = req.params.id;
   const GroupId = req.params.groupId;
   const supervisorId = req.body.supervisorId;
@@ -256,7 +257,7 @@ router.route("/supervisor-accept/:id/:groupId").put([(verifyJWT), (verifyRoles(R
 });
 
 //Reject Supervisor request
-router.route("/supervisor-reject/:id/:groupId").put([(verifyJWT), (verifyRoles(ROLES_LIST.Staff))], async (req, res) => {
+router.route("/supervisor-reject/:id/:groupId").put([(verifyJWT), (verifyRoles(ROLES_LIST.admin))], async (req, res) => {
   const requestId = req.params.id;
   const GroupId = req.params.groupId;
 

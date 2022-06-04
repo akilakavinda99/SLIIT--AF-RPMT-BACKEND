@@ -26,7 +26,7 @@ router.route('/').get([(verifyJWT), (verifyRoles(ROLES_LIST.admin, ROLES_LIST.St
 router.route('/:id').get((verifyJWT), (req, res) => {
     StudentGroup.findById(req.params.id)
         .then(group => {
-            console.log(group);
+            // console.log(group);
             res.json({ group: group })
         })
         .catch(err => {
