@@ -260,13 +260,11 @@ router.route("/supervisor-accept/:id/:groupId").put([(verifyJWT), (verifyRoles(R
       await StudentGroup.findByIdAndUpdate(GroupId, studentGroup).then(() => {
         res.status(200).send({
           status: "Supervisor request accepted",
+        })
 
-        res.status(500).send({
-          status: "Error with accepting request",
-
-        });
       });
-  });
+    });
+})
 
 //Reject Supervisor request
 router.route("/supervisor-reject/:id/:groupId").put([(verifyJWT), (verifyRoles(ROLES_LIST.Staff))], async (req, res) => {
@@ -298,6 +296,9 @@ router.route("/supervisor-reject/:id/:groupId").put([(verifyJWT), (verifyRoles(R
       console.log(err.message);
       res.status(500).send({
         status: "Error with rejecting request",
+      })
+    })
+})
 
 // router
 //   .route("/supervisor-reject/:id/:groupId")
@@ -403,4 +404,4 @@ router.route("/cosupervisor-reject/:id/:groupId").put(async (req, res) => {
     });
 });
 
-module.exports = router;
+module.exports = router
