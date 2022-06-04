@@ -21,13 +21,13 @@ app.use(express.json());
 // parse application/json
 // app.use(bodyParser.json())
 
-const server = http.createServer(app);
-const io = new Server(server, {
-  cors: {
-    origin: "http://localhost:1234",
-    method: ["GET", "POST"],
-  },
-});
+// const server = http.createServer(app);
+// const io = new Server(server, {
+//   cors: {
+//     origin: "http://localhost:1234",
+//     method: ["GET", "POST"],
+//   },
+// });
 
 const URL = process.env.MONGODB_URL;
 
@@ -42,27 +42,28 @@ connection.once("open", () => {
   console.log("Mongodb connection success!");
 });
 
-io.on("connection", (socket) => {
-  console.log(`user connected: ${socket.id}`);
+// io.on("connection", (socket) => {
+//   console.log(`user connected: ${socket.id}`);
 
-  socket.on("join_room", (data) => {
-    socket.join(data);
-    console.log(data);
-  });
+//   socket.on("join_room", (data) => {
+//     socket.join(data);
+//     console.log(data);
+//   });
 
-  socket.on("send_message", (data) => {
-    socket.to(data.room).emit("receive_message", data);
-  });
-});
+//   socket.on("send_message", (data) => {
+//     socket.to(data.room).emit("receive_message", data);
+//   });
+// });
 
-const messageRouter = require("./routes/messages.js");
-app.use("/chat", messageRouter);
 
 //Login routes
 const loginRouter = require("./routes/login");
 // const verifyJWT = require("./middleware/verifyJWT.js");
 app.use("/main", loginRouter);
+
+
 app.use(verifyJWT);
+
 // Student routes
 const studentRouter = require("./routes/student.js");
 app.use("/student", studentRouter);

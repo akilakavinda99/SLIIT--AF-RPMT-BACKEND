@@ -22,6 +22,38 @@ router.route('/').get([(verifyJWT), (verifyRoles(ROLES_LIST.admin, ROLES_LIST.St
 })
 
 
+// Get no panel groups
+router.route('/nopanel').get([(verifyJWT), (verifyRoles(ROLES_LIST.admin, ROLES_LIST.Staff))], (req, res) => {
+    StudentGroup.find({ allocatedPanel: { $exists: false } })
+        .then(groups => {
+            res.status(200).send({
+                status: "Successfully fetched.",
+                groups: groups
+            })
+        })
+        .catch(err => {
+            console.log(err.message);
+            res.status(500).send({ error: "Error with fetching data." })
+        })
+})
+
+
+// Get groups that have panels
+router.route('/havepanel').get([(verifyJWT), (verifyRoles(ROLES_LIST.admin, ROLES_LIST.Staff))], (req, res) => {
+    StudentGroup.find({ allocatedPanel: { $exists: true } })
+        .then(groups => {
+            res.status(200).send({
+                status: "Successfully fetched.",
+                groups: groups
+            })
+        })
+        .catch(err => {
+            console.log(err.message);
+            res.status(500).send({ error: "Error with fetching data." })
+        })
+})
+
+
 // Get selected group details
 router.route('/:id').get((verifyJWT), (req, res) => {
     StudentGroup.findById(req.params.id)

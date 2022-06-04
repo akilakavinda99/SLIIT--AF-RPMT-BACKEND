@@ -45,12 +45,7 @@ router.route("/add").post([(verifyJWT), (verifyRoles(ROLES_LIST.admin))], (req, 
         password: hashedPassword
     }
 
-    Admin.findOne({
-        "admin": {
-            email: newData.email,
-            nic: newData.nic
-        }
-    })
+    Admin.findOne({ email: newData.email })
         .then((admin) => {
             if (!admin) {
 
@@ -94,6 +89,7 @@ router.route("/add").post([(verifyJWT), (verifyRoles(ROLES_LIST.admin))], (req, 
                     })
 
             } else {
+                console.log(admin);
                 res.status(409).send({
                     error: "User already exists."
                 })
