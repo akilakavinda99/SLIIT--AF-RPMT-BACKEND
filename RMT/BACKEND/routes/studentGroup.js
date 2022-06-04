@@ -22,6 +22,20 @@ router.route('/').get([(verifyJWT), (verifyRoles(ROLES_LIST.admin, ROLES_LIST.St
 })
 
 
+// Get selected group details
+router.route('/:id').get((verifyJWT), (req, res) => {
+    StudentGroup.findById(req.params.id)
+        .then(group => {
+            console.log(group);
+            res.json({ group: group })
+        })
+        .catch(err => {
+            console.log(err.message);
+            res.json({ error: "Error with fetching data" })
+        })
+})
+
+
 // Allocate panels randomly
 router.route('/rondomAllocatePanel').put([(verifyJWT), (verifyRoles(ROLES_LIST.admin))], (req, res) => {
     Panel.find()
