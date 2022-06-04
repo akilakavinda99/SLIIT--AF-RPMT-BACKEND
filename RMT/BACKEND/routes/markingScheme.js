@@ -1,10 +1,13 @@
 const router = require("express").Router()
+const ROLES_LIST = require("../config/roles_list.js")
+const verifyJWT = require("../middleware/verifyJWT.js")
+const verifyRoles = require("../middleware/verifyRoles.js")
 const MarkingScheme = require("../models/markingScheme.js")
 // const { route } = require("./admin.js")
 
 
 // Create new marking scheme
-router.route("/create").post((req, res) => {
+router.route("/create").post([(verifyJWT), (verifyRoles(ROLES_LIST.admin))], (req, res) => {
 
     const newData = {
         name: req.body.name,
@@ -32,7 +35,7 @@ router.route("/create").post((req, res) => {
 
 
 // Get all marking schemes
-router.route("/").get((req, res) => {
+router.route("/").get((verifyJWT), (req, res) => {
 
     MarkingScheme.find()
         .then((marking) => {
@@ -52,7 +55,7 @@ router.route("/").get((req, res) => {
 
 
 // Get a selected marking scheme
-router.route("/:id").get((req, res) => {
+router.route("/:id").get((verifyJWT), (req, res) => {
 
     let markingID = req.params.id
 
@@ -73,7 +76,7 @@ router.route("/:id").get((req, res) => {
 
 
 // Delete a marking scheme
-router.route("/delete/:id").delete(async (req, res) => {
+router.route("/delete/:id").delete([(verifyJWT), (verifyRoles(ROLES_LIST.admin))], async (req, res) => {
 
     let markingID = req.params.id
 
@@ -93,7 +96,7 @@ router.route("/delete/:id").delete(async (req, res) => {
 
 
 // Update marking scheme
-router.route("/update/:id").put(async (req, res) => {
+router.route("/update/:id").put([(verifyJWT), (verifyRoles(ROLES_LIST.admin))], async (req, res) => {
     const markingId = req.params.id
     const markingData = req.body
     markingData.lastModified = new Date()
