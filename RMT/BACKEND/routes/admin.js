@@ -27,7 +27,7 @@ const generatePass = (length) => {
 
 // Add new Admin to the system
 // router.route("/add").post((protect), (req, res) => {
-router.route("/add").post((req, res) => {
+router.route("/add").post([(verifyJWT), (verifyRoles(ROLES_LIST.admin))], (req, res) => {
 
     const password = generatePass(10)
     const saltRounds = 10
@@ -45,12 +45,7 @@ router.route("/add").post((req, res) => {
         password: hashedPassword
     }
 
-    Admin.findOne({
-        "admin": {
-            email: newData.email,
-            nic: newData.nic
-        }
-    })
+    Admin.findOne({ email: newData.email })
         .then((admin) => {
             if (!admin) {
 
@@ -94,6 +89,7 @@ router.route("/add").post((req, res) => {
                     })
 
             } else {
+                console.log(admin);
                 res.status(409).send({
                     error: "User already exists."
                 })
@@ -107,7 +103,7 @@ router.route("/add").post((req, res) => {
 
 
 // Get all admin details
-router.route("/").get((verifyJWT), (req, res) => {
+router.route("/").get([(verifyJWT), (verifyRoles(ROLES_LIST.admin))], (req, res) => {
     // router.route("/").get((req, res) => {
 
     Admin.find({}, { password: 0 })
@@ -126,7 +122,7 @@ router.route("/").get((verifyJWT), (req, res) => {
 
 // Update admin details
 // router.route("/update").put((protect), async (req, res) => {
-router.route("/update").put(async (req, res) => {
+router.route("/update").put([(verifyJWT), (verifyRoles(ROLES_LIST.admin))], async (req, res) => {
 
     let admin = req.body
 
@@ -157,7 +153,7 @@ router.route("/update").put(async (req, res) => {
 
 
 // Delete admin
-router.route("/delete/:id").delete((protect), async (req, res) => {
+router.route("/delete/:id").delete([(verifyJWT), (verifyRoles(ROLES_LIST.admin))], async (req, res) => {
 
     let adminID = req.params.id
 
@@ -199,7 +195,7 @@ router.route('/summary').get([(verifyJWT), (verifyRoles(ROLES_LIST.admin))], asy
 
 
 // Get admin details
-router.route('/profile').post((verifyJWT), async (req, res) => {
+router.route('/profile').post([(verifyJWT), (verifyRoles(ROLES_LIST.admin))], async (req, res) => {
 
     const { adminId } = req.body
     // console.log(adminId);
@@ -216,7 +212,7 @@ router.route('/profile').post((verifyJWT), async (req, res) => {
 
 
 // Change password
-router.route('/changePass').put((verifyJWT), async (req, res) => {
+router.route('/changePass').put([(verifyJWT), (verifyRoles(ROLES_LIST.admin))], async (req, res) => {
 
     const { adminId, currentPass, newPass, confirmPass } = req.body
 

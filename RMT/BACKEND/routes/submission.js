@@ -1,8 +1,11 @@
 const router = require("express").Router();
+const ROLES_LIST = require("../config/roles_list");
+const verifyJWT = require("../middleware/verifyJWT");
+const verifyRoles = require("../middleware/verifyRoles");
 let Submission = require("../models/submission");
 
 // Create new submission
-router.route("/create").post((req, res) => {
+router.route("/create").post([(verifyJWT), (verifyRoles(ROLES_LIST.admin))], (req, res) => {
   const newData = req.body;
 
   const newSubmission = new Submission(newData);
@@ -18,7 +21,7 @@ router.route("/create").post((req, res) => {
 });
 
 // Get all submisions
-router.route("/").get((req, res) => {
+router.route("/").get((verifyJWT), (req, res) => {
   Submission.find()
     .then((submissions) => {
       res.status(200).send({
@@ -32,7 +35,7 @@ router.route("/").get((req, res) => {
 });
 
 // Get all  available submisions
-router.route("/availableSubmissions").get((req, res) => {
+router.route("/availableSubmissions").get((verifyJWT), (req, res) => {
   // console.log("awawa");
   Submission.find({
     available: true,
@@ -49,7 +52,7 @@ router.route("/availableSubmissions").get((req, res) => {
 });
 
 // Get specific submission
-router.route("/:submissionId").get((req, res) => {
+router.route("/:submissionId").get((verifyJWT), (req, res) => {
   const submissionId = req.params.submissionId;
 
   Submission.findById(submissionId)
@@ -65,7 +68,7 @@ router.route("/:submissionId").get((req, res) => {
 });
 
 // Get specific submission
-router.route("/update/:submissionId").put((req, res) => {
+router.route("/update/:submissionId").put([(verifyJWT), (verifyRoles(ROLES_LIST.admin))], (req, res) => {
   const submissionId = req.params.submissionId;
   const newData = req.body;
 
@@ -80,7 +83,7 @@ router.route("/update/:submissionId").put((req, res) => {
 });
 
 // Delete submission
-router.route("/delete/:submissionId").delete((req, res) => {
+router.route("/delete/:submissionId").delete([(verifyJWT), (verifyRoles(ROLES_LIST.admin))], (req, res) => {
   const submissionId = req.params.submissionId;
   // console.log(submissionId);
 

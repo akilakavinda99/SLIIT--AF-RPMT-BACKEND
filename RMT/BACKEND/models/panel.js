@@ -10,7 +10,6 @@ const panelSchema = new Schema({
     },
     panelDesc: {
         type: String,
-        required: false,
         default: "No description..."
     },
     panelMembers: {
