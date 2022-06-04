@@ -9,6 +9,9 @@ let StudentGroup = require("../models/studentGroup")
 let Panel = require("../models/panel")
 
 const { protect } = require('../middleware/authMiddleware')
+const verifyJWT = require("../middleware/verifyJWT.js")
+const verifyRoles = require("../middleware/verifyRoles")
+const ROLES_LIST = require("../config/roles_list.js")
 
 // Generate a random password
 const generatePass = (length) => {
@@ -104,8 +107,8 @@ router.route("/add").post((req, res) => {
 
 
 // Get all admin details
-// router.route("/").get((protect), (req, res) => {
-router.route("/").get((req, res) => {
+router.route("/").get((verifyJWT), (req, res) => {
+    // router.route("/").get((req, res) => {
 
     Admin.find({}, { password: 0 })
         .then((admin) => {
@@ -175,9 +178,9 @@ router.route("/delete/:id").delete((protect), async (req, res) => {
 
 
 // Get dashboard summary
-router.route('/summary').get(async (req, res) => {
+router.route('/summary').get([(verifyJWT), (verifyRoles(ROLES_LIST.admin))], async (req, res) => {
     try {
-        const staffCount = await Staff.estimatedDocumentCount()
+        const staffCount = await Staff.estimatedDocumentCount({ isAccepted: true })
         const studentCount = await Student.estimatedDocumentCount()
         const stdGrpCount = await StudentGroup.estimatedDocumentCount()
         const panelCount = await Panel.estimatedDocumentCount()
@@ -192,14 +195,11 @@ router.route('/summary').get(async (req, res) => {
     } catch (err) {
         res.status(500).send({ error: err.message })
     }
-
-
-
 })
 
 
 // Get admin details
-router.route('/profile').post(async (req, res) => {
+router.route('/profile').post((verifyJWT), async (req, res) => {
 
     const { adminId } = req.body
     // console.log(adminId);
@@ -211,6 +211,38 @@ router.route('/profile').post(async (req, res) => {
         .catch(err => {
             console.log(err.message)
             res.status(500).send({ error: "Error with fetching data." })
+        })
+})
+
+
+// Change password
+router.route('/changePass').put((verifyJWT), async (req, res) => {
+
+    const { adminId, currentPass, newPass, confirmPass } = req.body
+
+    Admin.findById(adminId)
+        .then(admin => {
+            if (bcrypt.compareSync(currentPass, admin.password)) {
+                if (newPass === confirmPass) {
+                    const hashedPass = bcrypt.hashSync(newPass, 10)
+                    Admin.findByIdAndUpdate(adminId, { password: hashedPass })
+                        .then(() => {
+                            res.send({ status: "Password successfully changed." })
+                        })
+                        .catch(err => {
+                            console.log(err.message);
+                            res.send({ error: "Internal server error!" })
+                        })
+                } else {
+                    res.send({ error: "New password and confirm password doesn't match!" })
+                }
+            } else {
+                res.send({ error: "Invalid current password!" })
+            }
+        })
+        .catch(err => {
+            console.log(err.message);
+            res.send({ error: "Error with user action!" })
         })
 })
 

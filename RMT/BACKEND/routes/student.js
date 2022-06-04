@@ -5,15 +5,25 @@ let requestCoSupervisor = require("../models/requestCoSupervisor.js");
 let registerResearch = require("../models/registerResearchTopic.js");
 let StudentGroup = require("../models/studentGroup");
 
+let Staff = require("../models/staff");
+
 const { protect } = require("../middleware/authMiddleware");
 const { protect_student } = require("../middleware/authMiddleware_student");
+const { application } = require("express");
+
+const ROLES_LIST = require("../config/roles_list");
+const verifyRoles = require("../middleware/verifyRoles");
+const verifyJWT = require("../middleware/verifyJWT");
 
 // Add new Student to the system
-router.route("/add").post((req, res) => {
+router.route("/add").post(async (req, res) => {
+  const saltPassword = await bcrypt.genSalt(10);
+  const securePassword = await bcrypt.hash(req.body.password, saltPassword);
+
   const name = req.body.name;
   const itNumber = req.body.itNumber;
   const email = req.body.email;
-  const password = req.body.password;
+  const password = securePassword;
 
   const newStudent = new Student({
     name,
@@ -205,6 +215,108 @@ router.route("/requestSupervisor").post((req, res) => {
     });
 });
 
+// router.route("/stdlogin").post(async (req, res) => {
+//   const email = req.body.email;
+//   const password = req.body.password;
+//   console.log(email);
+
+//   Student.findOne({ email, password }, (err, Student) => {
+//     console.log(req.body.email);
+
+//     if (Student) {
+//       if (email == Student.email) {
+//         res.send({ message: "login sucess", Student: Student });
+//       } else {
+//         res.send({ error: "Wrong Credentials" });
+//       }
+//     } else {
+//       res.send({ error: "not registered" });
+//     }
+//   });
+// });
+
+// router.route("/stdlogin").post(async (req, res) => {
+
+//   const email = req.body.email;
+
+//   const password = req.body.password;
+
+//   console.log(email);
+
+//   await Student.findOne({
+
+//     email: email,
+
+//     password: password,
+
+//   })
+
+//     .then((student) => {
+
+//       if (student) {
+
+//         console.log(student);
+
+//         res.json(student);
+
+//       }
+
+//     })
+
+//     .catch((err) => {
+
+//       console.log(err);
+
+//     });
+
+// });
+
+router.route("/stdlogin").post(async (req, res) => {
+  const username = req.body.username;
+  const password = req.body.password;
+
+  await Student.findOne({ itNumber: username })
+    .then((student) => {
+      if (student) {
+        // if(bcrypt.compareSync(password, student.password)){
+        if (password == student.password) {
+          res.json({
+            status: "Successfully logged in as a Student.",
+            student: student,
+          });
+        } else {
+          res.json({
+            status: "Password doesn't match.",
+          });
+        }
+      } else {
+        Staff.findOne({ email: username })
+          .then((staff) => {
+            if (staff) {
+              if (bcrypt.compareSync(password, staff.password)) {
+                res.json({
+                  status: "Successfully logged in as Staff.",
+                  staff: staff,
+                });
+              } else {
+                res.json({
+                  status: "Password doesn't match.",
+                });
+              }
+            } else {
+              res.json({ status: "No user found" });
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
 // CoSupervisor Request
 router.route("/requestCoSupervisor").post((req, res) => {
   const topic = req.body.topic;
@@ -347,6 +459,8 @@ router.route("/").get((req, res) => {
       });
     });
 });
+
+
 
 router.route("/getStudent/:id").get((req, res) => {
   itNumber = req.params.id;
