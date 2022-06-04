@@ -13,7 +13,7 @@ const router = require("express").Router()
 const fileup=require("../models/documentup");
 
 router.route("/docup").post((req,res)=>{
-    console.log('createitem',req.body)
+    // console.log('createitem',req.body)
     const Fileup = new fileup(req.body);
     try {
         Fileup.save();

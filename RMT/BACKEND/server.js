@@ -61,6 +61,18 @@ const loginRouter = require("./routes/login");
 // const verifyJWT = require("./middleware/verifyJWT.js");
 app.use("/main", loginRouter);
 
+// Submissions routes
+const submissionRouter = require("./routes/submission");
+app.use("/submissions", submissionRouter);
+
+//file upload routes
+const fileuploadRouter = require("./routes/fileupload")
+app.use("/fileupload",fileuploadRouter)
+
+//presentation 
+const presentationRouter=require("./routes/presentation")
+app.use("/presentation",presentationRouter)
+
 
 app.use(verifyJWT);
 
@@ -88,17 +100,7 @@ app.use("/staff", staffRouter);
 const markingSchemRouter = require("./routes/markingScheme.js");
 app.use("/marking-schemes", markingSchemRouter);
 
-// Submissions routes
-const submissionRouter = require("./routes/submission");
-app.use("/submissions", submissionRouter);
 
-//file upload routes
-const fileuploadRouter = require("./routes/fileupload")
-app.use("/fileupload",fileuploadRouter)
-
-//presentation 
-const presentationRouter=require("./routes/presentation")
-app.use("/presentation",presentationRouter)
 
 app.listen(PORT, () => {
   console.log(`Server is up and running on port ${PORT}`);
