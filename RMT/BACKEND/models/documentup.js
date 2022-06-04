@@ -3,26 +3,29 @@ const mongoose = require('mongoose')
 const docSchema = mongoose.Schema({
     name:{
         type:String,
-        required:true
+        
     },
     
     document:{
-        data:Buffer,
-        contenentType:String
+        type:String,
     },
     topic:{
         type:String,
-        required:true
+        
     },
 
     itNumber: {
         type: String,
-        required: true
+       
     },
 
     groupID:{
         type: String,
-        required: true
+        
+    },
+
+    date:{
+        type:Date,
     }
 
 
