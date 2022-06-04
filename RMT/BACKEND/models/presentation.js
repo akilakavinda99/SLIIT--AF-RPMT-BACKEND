@@ -1,14 +1,8 @@
 const mongoose = require('mongoose')
+const Schema=mongoose.Schema;
 
-const docSchema = mongoose.Schema({
-    name:{
-        type:String,
-        
-    },
+const presentationSchema = Schema({
     
-    document:{
-        type:String,
-    },
     topic:{
         type:String,
         
@@ -24,6 +18,10 @@ const docSchema = mongoose.Schema({
         
     },
 
+    Link:{
+        type: String,
+    },
+
     date:{
         type:Date,
     }
@@ -33,4 +31,5 @@ const docSchema = mongoose.Schema({
 
 })
 
-module.exports=DocumentModel=mongoose.model('documentModel',docSchema)
+const Presentation=mongoose.model("Presentation",presentationSchema)
+module.exports=Presentation;

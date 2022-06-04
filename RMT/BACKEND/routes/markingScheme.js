@@ -43,6 +43,7 @@ router.route("/").get((verifyJWT), (req, res) => {
                 status: "Data successfully fetched.",
                 markings: marking
             })
+            console.log(marking);
         })
         .catch((err) => {
             console.log(err.message)

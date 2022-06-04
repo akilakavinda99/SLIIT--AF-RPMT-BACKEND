@@ -1,5 +1,4 @@
 const router = require("express").Router();
-const bodyParser = require("body-parser");
 let Student = require("../models/student");
 let requestSupervisor = require("../models/requestSupervisor.js");
 let requestCoSupervisor = require("../models/requestCoSupervisor.js");
@@ -80,6 +79,35 @@ router
         thirdMember,
         groupName,
       });
+
+    } else {
+      break;
+    }
+  }
+
+  for (let index = 0; index < IdArray.length; index++) {
+    if (existed) {
+      const element = IdArray[index];
+      console.log(element);
+      await Student.findOne({
+        itNumber: element,
+        hasGroup: true,
+      }).then((student) => {
+        console.log("then2 eka wda");
+        console.log(student);
+        if (student) {
+          existed = false;
+          res.status(406).send({
+            status: "One or more studentn the grp",
+          });
+          return;
+        }
+      });
+    } else {
+      break;
+    }
+  }
+
 
       var existed = true;
 
@@ -456,11 +484,11 @@ router.route("/registerResearch").post(verifyJWT, (req, res) => {
 });
 
 // Get all topics
-
 // router.route("/topics").get((verifyJWT),(req, res) => {
 //   registerResearch
 
 router.route("/topics").get(verifyJWT, (req, res) => {
+
   requestSupervisor
     .find()
     .then((researchtopics) => {
@@ -490,7 +518,7 @@ router
       });
   });
 
-//Login
+
 
 router.route("/getStudent/:id").get(verifyJWT, (req, res) => {
   itNumber = req.params.id;
