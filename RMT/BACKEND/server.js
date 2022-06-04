@@ -76,6 +76,10 @@ app.use("/submissions", submissionRouter);
 const fileuploadRouter = require("./routes/fileupload")
 app.use("/fileupload",fileuploadRouter)
 
+//presentation 
+const presentationRouter=require("./routes/presentation")
+app.use("/presentation",presentationRouter)
+
 
 
 

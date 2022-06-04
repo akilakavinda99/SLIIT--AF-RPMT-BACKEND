@@ -37,10 +37,12 @@ router.route("/docup").get(async(req,res)=>{
 
 router.route("/docup/:id").get(async(req, res) => {
 
-    let markingID = req.params.id
-    console.log(markingID)
+    let fID = req.params.id
+    console.log(fID)
 
-     await fileup.findById(markingID).then((file)=>{
+     await fileup.findOne({
+        itNumber:fID
+     }).then((file)=>{
         res.status(200).send({
             status: "Data successfully fetched",
             fileData:file
