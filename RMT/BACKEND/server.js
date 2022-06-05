@@ -61,6 +61,10 @@ const loginRouter = require("./routes/login");
 // const verifyJWT = require("./middleware/verifyJWT.js");
 app.use("/main", loginRouter);
 
+//Staff routes
+const staffRouter = require("./routes/staff.js");
+app.use("/staff", staffRouter);
+
 
 app.use(verifyJWT);
 
@@ -79,10 +83,6 @@ app.use("/studentGroups", groupRouter);
 // Panel routes
 const panelRouter = require("./routes/panel.js");
 app.use("/panels", panelRouter);
-
-//Staff routes
-const staffRouter = require("./routes/staff.js");
-app.use("/staff", staffRouter);
 
 // Marking routes
 const markingSchemRouter = require("./routes/markingScheme.js");
