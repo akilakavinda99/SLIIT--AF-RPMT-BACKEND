@@ -1,7 +1,7 @@
 // import Item from "../models/item.js";
 const Item=require("../models/documentup");
     const getItems = async(req,res)=>{
-    console.log('get items')
+    // console.log('get items')
     try {
         const item =await Item.find()
        
@@ -16,7 +16,7 @@ const Item=require("../models/documentup");
 
 
 const createItem = async(req,res)=>{
-    console.log('createitem',req.body)
+    // console.log('createitem',req.body)
     const item = new Item(req.body);
     try {
         await item.save();

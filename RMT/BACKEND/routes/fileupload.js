@@ -13,7 +13,7 @@ const router = require("express").Router()
 const fileup=require("../models/documentup");
 
 router.route("/docup").post((req,res)=>{
-    console.log('createitem',req.body)
+    // console.log('createitem',req.body)
     const Fileup = new fileup(req.body);
     try {
         Fileup.save();
@@ -26,9 +26,9 @@ router.route("/docup").post((req,res)=>{
 
 router.route("/docup").get(async(req,res)=>{
     try{
-        console.log("HIIII");
+        // console.log("HIIII");
         const Fileup= await fileup.find()
-        console.log(Fileup);
+        // console.log(Fileup);
         res.status(200).json(Fileup)
     }catch(error){
         res.status(404).json({message:error.message});
