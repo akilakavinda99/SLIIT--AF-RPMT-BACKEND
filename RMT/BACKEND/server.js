@@ -100,6 +100,10 @@ app.use("/fileupload",fileuploadRouter)
 const presentationRouter=require("./routes/presentation")
 app.use("/presentation",presentationRouter)
 
+//feedback
+const feedbackRouter=require("./routes/feedbacktopic")
+app.use("/feedback",feedbackRouter)
+
 app.listen(PORT, () => {
   console.log(`Server is up and running on port ${PORT}`);
 });
