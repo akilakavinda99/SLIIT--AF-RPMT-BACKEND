@@ -144,6 +144,7 @@ router
                   const studentUpdate = {
                     hasGroup: true,
                     groupId: newStudentGroup._id,
+                    groupName: newStudentGroup.groupName,
                   };
 
                   console.log(studentUpdate);
