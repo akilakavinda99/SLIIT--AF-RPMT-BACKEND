@@ -206,44 +206,6 @@ router
   });
 
 //Accept Supervisor request
-// router
-//   .route("/supervisor-accept/:id/:groupId")
-//   .put([verifyJWT, verifyRoles(ROLES_LIST.admin)], async (req, res) => {
-//     const requestId = req.params.id;
-//     const GroupId = req.params.groupId;
-//     const supervisorId = req.body.supervisorId;
-
-//     const updateRequestStatus = {
-//       supervisorRequestStatus: "Accepted",
-//     };
-
-//     await requestSupervisor
-//       .findByIdAndUpdate(requestId, updateRequestStatus)
-//       .then(async () => {
-//         const studentGroup = { supervisorId: supervisorId };
-//         await StudentGroup.findByIdAndUpdate(GroupId, studentGroup).then(() => {
-//           res.status(200).send({
-//             status: "Supervisor request accepted",
-//           });
-//         });
-//       })
-//       .catch((err) => {
-//         console.log(err.message);
-
-//         res.status(500).send({ error: "Error with accepting." });
-//       });
-//   } else {
-//     await Staff.findByIdAndDelete(staffId)
-//       .then(() => {
-//         res.status(200).send({ status: "Request rejected." });
-//       })
-//       .catch(() => {
-//         res.status(500).send({ error: "Error with rejecting." });
-//       });
-//   }
-// });
-
-//Accept Supervisor request
 router.route("/supervisor-accept/:id/:groupId").put([(verifyJWT), (verifyRoles(ROLES_LIST.Staff))], async (req, res) => {
   const requestId = req.params.id;
   const GroupId = req.params.groupId;
@@ -300,45 +262,6 @@ router.route("/supervisor-reject/:id/:groupId").put([(verifyJWT), (verifyRoles(R
     })
 })
 
-// router
-//   .route("/supervisor-reject/:id/:groupId")
-//   .put([verifyJWT, verifyRoles(ROLES_LIST.admin)], async (req, res) => {
-//     const requestId = req.params.id;
-//     const GroupId = req.params.groupId;
-
-//     console.log(GroupId);
-//     console.log(requestId);
-
-//     const updateRequestStatus = {
-//       supervisorRequestStatus: "Rejected",
-//     };
-
-//     await requestSupervisor
-//       .findByIdAndUpdate(requestId, updateRequestStatus)
-//       .then(async () => {
-//         const studentGroup = { hasRequestedSupervisor: false };
-//         await StudentGroup.findByIdAndUpdate(GroupId, studentGroup)
-//           .then(() => {
-//             res.status(200).send({
-//               status: "Supervisor request rejected",
-//             });
-//           })
-//           .catch((err) => {
-//             console.log(err);
-//           });
-
-//         // res.status(200).send({
-//         //   status: "Supervisor request rejected"
-//         // })
-//       })
-//       .catch((err) => {
-//         console.log(err.message);
-//         res.status(500).send({
-//           status: "Error with rejecting request",
-//         });
-//       });
-//   });
-
 
 //Accept Co-Supervisor request
 router.route("/cosupervisor-accept/:id/:groupId").put(async (req, res) => {
@@ -369,7 +292,7 @@ router.route("/cosupervisor-accept/:id/:groupId").put(async (req, res) => {
 });
 
 
-//Reject Supervisor request
+//Reject  Co-Supervisor request
 router.route("/cosupervisor-reject/:id/:groupId").put(async (req, res) => {
   const requestId = req.params.id;
   const GroupId = req.params.groupId;
@@ -384,7 +307,7 @@ router.route("/cosupervisor-reject/:id/:groupId").put(async (req, res) => {
   await requestCoSupervisor
     .findByIdAndUpdate(requestId, updateRequestStatus)
     .then(async () => {
-      const studentGroup = { hasRequestedSupervisor: false };
+      const studentGroup = { hasRequestedCoSupervisor: false };
       await StudentGroup.findByIdAndUpdate(GroupId, studentGroup)
         .then(() => {
           res.status(200).send({
@@ -404,4 +327,56 @@ router.route("/cosupervisor-reject/:id/:groupId").put(async (req, res) => {
     });
 });
 
-module.exports = router
+// get logged in supervisor requests
+router.route("/supervisor/request/:id").get(async (req, res) => {
+  const supervisorID = req.params.id;
+
+  await requestSupervisor.find({supervisorId: supervisorID}).then( (request) => {
+    res.status(200).send({
+      status: "Supervisor requests fetched",request
+    });
+  }).catch((err) => {
+    console.log(err.message);
+      res.status(500).send({
+        status: "Error with fetching request",
+  });
+});
+});
+
+
+// get logged in Co-supervisor requests
+router.route("/cosupervisor/request/:id").get(async (req, res) => {
+  const cosupervisorID = req.params.id;
+
+  await requestCoSupervisor.find({supervisorId: cosupervisorID}).then( (request) => {
+    res.status(200).send({
+      status: "Co-Supervisor requests fetched",request
+    });
+  }).catch((err) => {
+    console.log(err.message);
+      res.status(500).send({
+        status: "Error with fetching request",
+  });
+});
+});
+
+
+// Delete staff member
+router.route('/delete/:id').delete([(verifyJWT), (verifyRoles(ROLES_LIST.admin))], async (req, res) => {
+  const staffId = req.params.id
+  Staff.findByIdAndDelete(staffId)
+    .then(() => {
+      res.status(200).send({
+        status: "User account deleted."
+      })
+    })
+    .catch((err) => {
+      console.log(err.message)
+      res.status(500).send({
+        error: "Error with deleting admin."
+      })
+    })
+})
+
+module.exports = router;
+
