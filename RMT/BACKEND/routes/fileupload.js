@@ -15,12 +15,37 @@ const fileup=require("../models/documentup");
 router.route("/docup").post((req,res)=>{
     // console.log('createitem',req.body)
     const Fileup = new fileup(req.body);
-    try {
-        Fileup.save();
-        res.status(201).json(Fileup);
-    } catch (error) {
+    const itNumber=Fileup.itNumber;
+    console.log(itNumber)
+
+    fileup.findOne({
+        itNumber:itNumber,
+    })
+    .then((fileup)=>{
+        if(!fileup){
+            Fileup.save()
+            .then(()=>{
+                res.json("Submission Successfully Added to the system")
+            })
+            .catch((error)=>{
+                res.json(error);
+                console.log(error);
+            });
+        }else{
+            res.status(409).send({
+                error:"Submission already exists.",
+            });
+        }
+    })
+    .catch((error)=>{
+        res.send("Error : "+error.message);
+    });
+    // try {
+    //     Fileup.save();
+    //     res.status(201).json(Fileup);
+    // } catch (error) {
         
-    }
+    // }
 
 })
 
