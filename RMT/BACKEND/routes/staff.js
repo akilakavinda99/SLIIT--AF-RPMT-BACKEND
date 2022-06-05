@@ -404,4 +404,22 @@ router.route("/cosupervisor-reject/:id/:groupId").put(async (req, res) => {
     });
 });
 
+
+// Delete staff member
+router.route('/delete/:id').delete([(verifyJWT), (verifyRoles(ROLES_LIST.admin))], async (req, res) => {
+  const staffId = req.params.id
+  Staff.findByIdAndDelete(staffId)
+    .then(() => {
+      res.status(200).send({
+        status: "User account deleted."
+      })
+    })
+    .catch((err) => {
+      console.log(err.message)
+      res.status(500).send({
+        error: "Error with deleting admin."
+      })
+    })
+})
+
 module.exports = router
