@@ -2,6 +2,7 @@ const router = require("express").Router();
 const { Router } = require("express");
 let Presentation=require("../models/presentation");
 
+//add presentation
 router.route("/").post((req, res)=>{
     const topic=req.body.topic;
     const itNumber=req.body.itNumber;
@@ -43,6 +44,7 @@ router.route("/").post((req, res)=>{
 
 })
 
+//get all presentations 
 router.route("/presentationview").get(async(req,res)=>{
     try{
         const Fileup= await Presentation.find()
@@ -54,6 +56,7 @@ router.route("/presentationview").get(async(req,res)=>{
 })
 
 
+//get one presentation
 router.route("/presentation/:id").get(async(req, res) => {
 
     let fID = req.params.id

@@ -215,61 +215,7 @@ router.route("/requestSupervisor").post((req, res) => {
     });
 });
 
-// router.route("/stdlogin").post(async (req, res) => {
-//   const email = req.body.email;
-//   const password = req.body.password;
-//   console.log(email);
 
-//   Student.findOne({ email, password }, (err, Student) => {
-//     console.log(req.body.email);
-
-//     if (Student) {
-//       if (email == Student.email) {
-//         res.send({ message: "login sucess", Student: Student });
-//       } else {
-//         res.send({ error: "Wrong Credentials" });
-//       }
-//     } else {
-//       res.send({ error: "not registered" });
-//     }
-//   });
-// });
-
-// router.route("/stdlogin").post(async (req, res) => {
-
-//   const email = req.body.email;
-
-//   const password = req.body.password;
-
-//   console.log(email);
-
-//   await Student.findOne({
-
-//     email: email,
-
-//     password: password,
-
-//   })
-
-//     .then((student) => {
-
-//       if (student) {
-
-//         console.log(student);
-
-//         res.json(student);
-
-//       }
-
-//     })
-
-//     .catch((err) => {
-
-//       console.log(err);
-
-//     });
-
-// });
 
 router.route("/stdlogin").post(async (req, res) => {
   const username = req.body.username;

@@ -12,6 +12,7 @@
 const router = require("express").Router()
 const fileup=require("../models/documentup");
 
+//add document to the database
 router.route("/docup").post((req,res)=>{
     console.log('createitem',req.body)
     const Fileup = new fileup(req.body);
@@ -24,6 +25,7 @@ router.route("/docup").post((req,res)=>{
 
 })
 
+//get all documents
 router.route("/docup").get(async(req,res)=>{
     try{
         console.log("HIIII");
@@ -35,6 +37,7 @@ router.route("/docup").get(async(req,res)=>{
     }
 })
 
+//get one document
 router.route("/docup/:id").get(async(req, res) => {
 
     let fID = req.params.id
