@@ -16,7 +16,7 @@ const { application } = require("express");
 const ROLES_LIST = require("../config/roles_list");
 const verifyRoles = require("../middleware/verifyRoles");
 const verifyJWT = require("../middleware/verifyJWT");
-const Presentation = require("../models/evaluatePresentation");
+const Presentation = require("../models/presentation");
 
 // Add new Student to the system
 router.route("/add").post(async (req, res) => {
